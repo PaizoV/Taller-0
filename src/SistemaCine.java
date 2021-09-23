@@ -13,5 +13,9 @@ public class SistemaCine {
 		String [] tiposDePeliculas=new String[1000];
 		double [] recaudaciones= new double[1000];
 		String [] horarios= new String [1000];
+		//Matrices
+		String [][] entradasCompradas= new String[1000][1000];
+		
+		
 	}
 }
