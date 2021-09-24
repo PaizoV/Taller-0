@@ -158,6 +158,26 @@ public class SistemaCine {
 					desplegarMenuAdmin();
 					System.out.println("\nOPCION: ");
 					int op=Integer.parseInt(scan.nextLine());
+					switch (op) {
+					case 1: {
+						//TAQUILLA
+						
+					}
+					case 2: {
+						//INFORMACION DE CLIENTE
+											
+					}
+					case 3: {
+						//INICIAR OTRA SESION
+						
+					}
+					case 4: {
+						//CERRAR SISTEMA
+						
+					}
+					default:
+						throw new IllegalArgumentException("Unexpected value: " + op);
+					}
 									
 				}
 				//MENU CLIENTE
@@ -165,27 +185,37 @@ public class SistemaCine {
 					desplegarMenuCliente();
 					System.out.println("\nOPCION: ");
 					int op=Integer.parseInt(scan.nextLine());
-					
-					if(op==1) {
+					switch (op) {
+					case 1: {
 						//COMPRAR ENTRADA
-						devolucionEntradas();
+						devolucionEntradas();					
+					}
+					case 2:{
+						//INFORMACION DE USUARIO
 						
 					}
-					else
-						//INICIAR OTRA SESION
-						if(op==5) {
-							break;
-						}
-				   else 
-					   //CERRAR SISTEMA
-				   		if(op==6){
+					case 3:{
+						//DEVOLUCION DE ENTRADA
 						
+					}
+					case 4:{
+						//CARTELERA
+						
+					}
+					case 5:{
+						//INICIAR OTRA SESION
+						break;
+					}
+					case 6:{
+						//CERRAR SISTEMA
+						
+					}
+					default:{
+						//OPCION INVALIDA
+						System.out.println("\nOpcion invalida.");
+						 continue;
 						}
-				   else {
-					   //OPCION NO VALIDA
-					   System.out.println("\nOpcion invalida.");
-					   continue;
-				   }
+					}
 				}
 			}
 		}
@@ -215,8 +245,8 @@ public class SistemaCine {
 			System.out.println("**********************************************************\n");
 			System.out.println("[1] TAQUILLA");
 			System.out.println("[2] INFORMACION DE CLIENTE");
-			System.out.println("[5] INICIAR OTRA SESION");	
-			System.out.println("[6] CERRAR SISTEMA");
+			System.out.println("[3] INICIAR OTRA SESION");	
+			System.out.println("[4] CERRAR SISTEMA");
 		
 	}
 
