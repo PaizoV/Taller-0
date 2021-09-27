@@ -176,7 +176,9 @@ public class SistemaCine {
 						
 					}
 					default:
-						throw new IllegalArgumentException("Unexpected value: " + op);
+						//OPCION INVALIDA
+						System.out.println("\nOpcion invalida.");
+						continue;
 					}
 									
 				}
@@ -188,7 +190,14 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//COMPRAR ENTRADA
-						devolucionEntradas();					
+						System.out.print("Ingrese el nombre de la pelicula: ");
+						String nombrePelicula=scan.nextLine();
+						desplegarHorario(scan,nombrePelicula,nombresDePeliculas,horarios,cantidadPeliculas);
+						System.out.print("Ingrese el numero de la funcion: ");
+						int numFuncion=scan.nextInt();
+						desplegarAsientos(asientos,numFuncion);
+						
+						
 					}
 					case 2:{
 						//INFORMACION DE USUARIO
@@ -196,7 +205,7 @@ public class SistemaCine {
 					}
 					case 3:{
 						//DEVOLUCION DE ENTRADA
-						
+						devolucionEntradas();
 					}
 					case 4:{
 						//CARTELERA
@@ -204,7 +213,9 @@ public class SistemaCine {
 					}
 					case 5:{
 						//INICIAR OTRA SESION
-						break;
+						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos,
+								 estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, 
+								 horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
 					}
 					case 6:{
 						//CERRAR SISTEMA
@@ -213,12 +224,40 @@ public class SistemaCine {
 					default:{
 						//OPCION INVALIDA
 						System.out.println("\nOpcion invalida.");
-						 continue;
+						 continue;						 
+						 
 						}
 					}
 				}
 			}
 		}
+	}
+
+	private static void desplegarAsientos(String[][][] asientos) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	private static void desplegarHorario(Scanner scan, String nombrePelicula, String[] nombresDePeliculas, String[] horarios,
+			int cantidadPeliculas) {
+		//Buscar pelicula
+		int indicePelicula=buscarIndice(nombrePelicula, horarios, cantidadPeliculas);
+		String horariosDisponibles=horarios[indicePelicula];
+		String [] partes= horariosDisponibles.split("/");
+		int i;
+		//desplegar salas
+		for(i=0;i<partes.length;i++) {
+			String [] partes2= partes[i].split(",");
+			String sala=partes2[0];
+			String horario=partes2[1];
+			if(horario.equals("M")) {
+				System.out.println("Funcion ["+(i+1)+"] en la sala numero "+sala+" en el horario de la Mañana");
+			}else if(horario.equals("T")){
+				System.out.println("Funcion ["+(i+1)+"] en la sala numero "+sala+" en el horario de la Tarde ");
+			}
+		}
+		
+		
 	}
 
 	private static void devolucionEntradas() {
@@ -314,12 +353,12 @@ public class SistemaCine {
 		}
 	}
 
-	private static int buscarIndice(String rutInput, String[] ruts, int cantidadUsuarios) {
-		if (cantidadUsuarios == 0) {
+	private static int buscarIndice(String clave, String[] lista, int cantidad) {
+		if (cantidad == 0) {
 			return -1;	
 		}
-		for (int i = 0; i < cantidadUsuarios; i++) {
-			if (ruts[i].equals(rutInput)) {
+		for (int i = 0; i < cantidad; i++) {
+			if (lista[i].equals(clave)) {
 				return i;
 			}
 		}
