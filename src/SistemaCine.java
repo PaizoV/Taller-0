@@ -280,7 +280,7 @@ public class SistemaCine {
 	private static String [] desplegarHorario(Scanner scan, String nombrePelicula, String[] nombresDePeliculas, String[] horarios,
 			int cantidadPeliculas) {
 		//Buscar pelicula
-		int indicePelicula=buscarIndice(nombrePelicula, horarios, cantidadPeliculas);
+		int indicePelicula=buscarIndice(nombrePelicula, horarios);
 		String horariosDisponibles=horarios[indicePelicula];
 		String [] partes= horariosDisponibles.split("/");
 		int i;
@@ -381,7 +381,7 @@ public class SistemaCine {
 			System.out.println("[2] CERRAR SISTEMA");
 	}
 	private static Boolean buscarRut(String rutInput, String[] ruts, int cantidadUsuarios) {
-		int index_rut = buscarIndice(rutInput, ruts, cantidadUsuarios);
+		int index_rut = buscarIndice(rutInput, ruts);
 		//RUT ENCONTRADO
 		if ((index_rut != -1) || (rutInput.equals("ADMIN"))) {
 			return true;
@@ -392,12 +392,16 @@ public class SistemaCine {
 		}
 	}
 
-	private static int buscarIndice(String clave, String[] lista, int cantidad) {
-		if (cantidad == 0) {
-			return -1;	
-		}
-		for (int i = 0; i < cantidad; i++) {
-			if (lista[i].equals(clave)) {
+	/**
+	 * Search for the specified item in a list, and returns its position.
+	 * @param valor The item to look for.
+	 * @param lista The list where the item will be searched.
+	 * @return The index of item in the list. If not found, returns a -1.
+	 */
+	private static int buscarIndice(String valor, String[] lista) {
+		int i = 0;
+		while (i < lista.length && lista[i] != null) {
+			if (lista[i].equals(valor)) {
 				return i;
 			}
 		}
