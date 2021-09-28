@@ -24,7 +24,7 @@ public class SistemaCine {
 		
 		// Inventory and seats' matrixes
 		String[][] entradasCompradas = new String[1000][1000];
-		String[][][] asientos = new String[7][30][6];
+		String[][][] asientos = new String[10][30][6];
 		
 		// Text files reading
 		int cantidadUsuarios = leerArchivoClientes(nombres, apellidos, ruts, contrasenias, saldos);
@@ -50,8 +50,7 @@ public class SistemaCine {
 		Scanner scan = new Scanner(new File("peliculas.txt"));
 		int i = 0;
 		while (scan.hasNextLine()) {
-			// Only splits 4 parts
-			String[] parts = scan.nextLine().split(",", 4);
+			String[] parts = scan.nextLine().split(",", 4);		// Only splits 4 parts
 			nombresDePeliculas[i] = parts[0];
 			tiposDePeliculas[i] = parts[1];
 			recaudaciones[i] = Double.parseDouble(parts[2]);
@@ -101,6 +100,28 @@ public class SistemaCine {
 			i++;
 		}
 		return i;
+	}
+	
+	public static void rellenarAsientos(String[][][] asientos) {
+		// First we fill the entire matrix with "disponible"
+		for (int i = 0; i < 10; i++) {
+			for (int j = 0; j < 30; j++) {
+				for (int k = 0; k < 6; k++) {
+					asientos[i][j][k] = "disponible";
+				}
+			}
+		}
+		// Now we fill the upper corners with "no disponible"
+		for (int k = 0; k < 6; k++) {
+			for (int i = 0; i < 4; i++) {
+				for (int j = 0; j < 5; j++) {		// Upper left corner
+					asientos[i][j][k] = "no disponible";
+				}
+				for (int j = 25; j < 30; j++) {		// Upper right corner
+					asientos[i][j][k] = "no disponible";
+				}
+			}
+		}
 	}
 
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
