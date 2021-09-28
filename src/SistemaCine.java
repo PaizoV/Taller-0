@@ -1,12 +1,14 @@
 import java.util.Scanner;
+import java.io.File;
+import java.io.IOException;
 
 public class SistemaCine {
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		Scanner scan = new Scanner(System.in);
-		// Creacion de arreglos
+		// Arrays creation
 		
-		// Listas parelelas de clientes
+		// Users' parallel lists
 		String[] nombres = new String[1000];
 		String[] apellidos = new String[1000];
 		String[] ruts = new String[1000];
@@ -14,41 +16,91 @@ public class SistemaCine {
 		String[] estados = new String [1000];
 		double[] saldos = new double[1000];
 		
-		// Listas paralelas de peliculas
+		// Movies' parallel lists
 		String[] nombresDePeliculas = new String[1000];
 		String[] tiposDePeliculas = new String[1000];
 		double[] recaudaciones = new double[1000];
 		String[] horarios = new String [1000];
 		
-		// Matrices de inventarios y asientos
+		// Inventory and seats' matrixes
 		String[][] entradasCompradas = new String[1000][1000];
 		String[][][] asientos = new String[7][30][6];
 		
-		//Lecturas 
-		int cantidadUsuarios=lecturaArchivoClientes(scan,nombres,apellidos,ruts,contrasenias,saldos);
-		lecturaArchivoStatus(scan,ruts,estados);
-		int cantidadPeliculas=lecturaArchivoPeliculas(scan,nombresDePeliculas,tiposDePeliculas,recaudaciones,horarios);
+		// Text files reading
+		int cantidadUsuarios = leerArchivoClientes(nombres, apellidos, ruts, contrasenias, saldos);
+		leerArchivoStatus(ruts, estados);
+		int cantidadPeliculas = leerArchivoPeliculas(nombresDePeliculas, tiposDePeliculas, recaudaciones, horarios);
 		
-		//Iniciar sesion
-		iniciarSesion(scan,nombres,apellidos,ruts,contrasenias,saldos,estados,nombresDePeliculas,tiposDePeliculas,
-				recaudaciones,horarios,entradasCompradas,asientos, cantidadUsuarios, cantidadPeliculas);
+		// Login
+		iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, nombresDePeliculas, tiposDePeliculas,
+				recaudaciones, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
+	}
+	
+	/**
+	 * Reads the text file "peliculas" and stores its data into the corresponding lists.
+	 * @param nombresDePeliculas The names of the movies.
+	 * @param tiposDePeliculas If the movie is a premiere or not.
+	 * @param recaudaciones The amount of money the movie has generated.
+	 * @param horarios The avalaible times for a movie.
+	 * @return The amount of movies the text file has.
+	 * @throws IOException
+	 */
+	private static int leerArchivoPeliculas(String[] nombresDePeliculas, String[] tiposDePeliculas,
+			double[] recaudaciones, String[] horarios) throws IOException {
+		Scanner scan = new Scanner(new File("peliculas.txt"));
+		int i = 0;
+		while (scan.hasNextLine()) {
+			// Only splits 4 parts
+			String[] parts = scan.nextLine().split(",", 4);
+			nombresDePeliculas[i] = parts[0];
+			tiposDePeliculas[i] = parts[1];
+			recaudaciones[i] = Double.parseDouble(parts[2]);
+			horarios[i] = parts[3];
+			i++;
+		}
+		return i;
 	}
 
-	private static int lecturaArchivoPeliculas(Scanner scan, String[] nombresDePeliculas, String[] tiposDePeliculas,
-			double[] recaudaciones, String[] horarios) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * Reads the text file "status" and checks if a user is enabled or not.
+	 * @param ruts The RUT of the users.
+	 * @param estados The status of a user.
+	 * @throws IOException
+	 */
+	private static void leerArchivoStatus(String[] ruts, String[] estados) throws IOException {
+		Scanner scan = new Scanner(new File("status.txt"));
+		while (scan.hasNextLine()) {
+			String[] partes = scan.nextLine().split(",");
+			String rut = cambiarFormato(partes[0]);
+			int i = buscarIndice(rut, ruts);
+			estados[i] = partes[1];
+		}
 	}
 
-	private static void lecturaArchivoStatus(Scanner scan, String[] ruts, String[] estados) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	private static int lecturaArchivoClientes(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
-			String[] contrasenias, double[] saldos) {
-		// TODO Auto-generated method stub
-		return 0;
+	/**
+	 * Reads the text file "clientes" and stores its data into the corresponding lists.
+	 * @param nombres The first names of the users.
+	 * @param apellidos The last names of the users.
+	 * @param ruts The RUT of the users.
+	 * @param contrasenias The passwords of the users.
+	 * @param saldos The avalaible money a user has.
+	 * @return The amount of registered users in the system.
+	 * @throws IOException
+	 */
+	private static int leerArchivoClientes(String[] nombres, String[] apellidos, String[] ruts,
+			String[] contrasenias, double[] saldos) throws IOException {
+		Scanner scan = new Scanner(new File("clientes.txt"));
+		int i = 0;
+		while (scan.hasNextLine()) {
+			String[] partes = scan.nextLine().split(",");
+			nombres[i] = partes[0];
+			apellidos[i] = partes[1];
+			ruts[i] = cambiarFormato(partes[2]);
+			contrasenias[i] = partes[3];
+			saldos[i] = Double.parseDouble(partes[4]);
+			i++;
+		}
+		return i;
 	}
 
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
