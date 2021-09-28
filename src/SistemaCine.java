@@ -190,17 +190,50 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//COMPRAR ENTRADA
+
 						System.out.print("Ingrese el nombre de la pelicula: ");
 						String nombrePelicula=scan.nextLine();
-						desplegarHorario(scan,nombrePelicula,nombresDePeliculas,horarios,cantidadPeliculas);
+						String [] horariosPeli=desplegarHorario(scan,nombrePelicula,nombresDePeliculas,
+											   horarios,cantidadPeliculas);
 						System.out.print("Ingrese el numero de la funcion: ");
 						int numFuncion=scan.nextInt();
-						desplegarAsientos(asientos,numFuncion);
-						
-						
+						desplegarAsientos(asientos,horariosPeli,numFuncion);
+						System.out.print("Ingrese el numero de entradas: ");
+						int numAsientos=scan.nextInt();
+						for(int i=0;i<numAsientos;i++) {
+							System.out.print("Seleccione un asiento para comprar: ");
+							String asientoSeleccionado=scan.nextLine();
+							//FALTA
+						}
+						calcularTotalCompra(asientos);
+						//CONFIRMACION 
+						System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1]NO[0]: ");
+						int opcion= Integer.parseInt(scan.nextLine());
+						if(opcion==1) {
+							System.out.println("[1] RECARGAR ");
+							System.out.println("[2] CANCELAR");
+							System.out.println("Ingrese una opcion: ");
+							int op2=scan.nextInt();
+							switch (op2) {
+							case 1: {
+								//RECARGAR SALDO 
+								
+							}
+							case 2:{
+								//CANCELAR
+								System.out.println("CANCELADO . . .");
+								continue;
+							}
+						}
+						}else
+						if(opcion==0) {
+							System.out.println("COMPRA NO REALIZADA . . .");
+						    continue;
+						}
 					}
 					case 2:{
 						//INFORMACION DE USUARIO
+						
 						
 					}
 					case 3:{
@@ -233,12 +266,18 @@ public class SistemaCine {
 		}
 	}
 
-	private static void desplegarAsientos(String[][][] asientos) {
+	private static void calcularTotalCompra(String[][][] asientos) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	private static void desplegarHorario(Scanner scan, String nombrePelicula, String[] nombresDePeliculas, String[] horarios,
+	private static void desplegarAsientos(String[][][] asientos, String[] horariosPeli, int numFuncion) {
+		//Asientos disponibles
+		
+		
+	}
+
+	private static String [] desplegarHorario(Scanner scan, String nombrePelicula, String[] nombresDePeliculas, String[] horarios,
 			int cantidadPeliculas) {
 		//Buscar pelicula
 		int indicePelicula=buscarIndice(nombrePelicula, horarios, cantidadPeliculas);
@@ -256,7 +295,7 @@ public class SistemaCine {
 				System.out.println("Funcion ["+(i+1)+"] en la sala numero "+sala+" en el horario de la Tarde ");
 			}
 		}
-		
+		return partes;
 		
 	}
 
