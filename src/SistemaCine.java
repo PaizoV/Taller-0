@@ -61,7 +61,7 @@ public class SistemaCine {
 			System.out.println("**********************************************************");
 			System.out.print("\nRUT:");
 			String rutInput = scan.nextLine();
-			rutInput = cambiaFormato(rutInput);
+			rutInput = cambiarFormato(rutInput);
 			//valida si el usuario esta registrado
 			Boolean validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
 			
@@ -76,7 +76,7 @@ public class SistemaCine {
 						System.out.println("**********************************************************");
 						System.out.print("\nRUT:");
 						rutInput = scan.nextLine();
-						rutInput = cambiaFormato(rutInput);
+						rutInput = cambiarFormato(rutInput);
 						validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
 					}
 					else {
@@ -100,7 +100,7 @@ public class SistemaCine {
 							System.out.println("**********************************************************");
 							System.out.print("\nRUT:");
 							rutInput = scan.nextLine();
-							rutInput = cambiaFormato(rutInput);
+							rutInput = cambiarFormato(rutInput);
 							validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
 						} 
 						else {
@@ -393,7 +393,7 @@ public class SistemaCine {
 	}
 
 	/**
-	 * Search for the specified item in a list, and returns its position.
+	 * Search for the specified item in a list.
 	 * @param valor The item to look for.
 	 * @param lista The list where the item will be searched.
 	 * @return The index of item in the list. If not found, returns a -1.
@@ -407,24 +407,26 @@ public class SistemaCine {
 		}
 		return -1;
 	}
-
-	private static String cambiaFormato(String rut) {
-		String[] lista = rut.split("");
-		String retorno = "";
-		for (int i = 0; i < lista.length; i++) {
-			if (lista[i].equals(".") || lista[i].equals("-")) {	
-			} 
+	
+	/**
+	 * Ignores points and hyphens in a RUT, and also transforms any 'k' to lowercase.
+	 * @param rut The RUT that will be changed.
+	 * @return The transformed RUT.
+	 */
+	private static String cambiarFormato(String rut) {
+		String[] chars = rut.split("");
+		String nuevoRut = "";
+		for (int i = 0; i < rut.length(); i++) {
+			if (chars[i].equals("-") || chars[i].equals(".")) {
+				continue;
+			}
+			else if (chars[i].equalsIgnoreCase("k")) {
+				nuevoRut += "k";
+			}
 			else {
-				if (lista[i].equalsIgnoreCase("k")) {
-					retorno += "k";
-				} 
-				else {
-					retorno+=lista[i];
-				}
+				nuevoRut += chars[i];
 			}
 		}
-		return retorno;
+		return nuevoRut;
 	}
-
-
 }
