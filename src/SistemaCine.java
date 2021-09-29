@@ -349,9 +349,21 @@ public class SistemaCine {
 	
 	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
 			double[] recaudacionesTarde, int cantidadPeliculas) {
-		
+		for(int i=0; i<cantidadPeliculas;i++) {
+			System.out.println("LA PELICULA "+nombresDePeliculas[i].toUpperCase());
+			System.out.println("MONTO RECAUDADO TOTAL: "+recaudaciones[i]);
+			System.out.println("MONTO RECAUDADO A LO LARGO DEL DIA: "+(recaudacionesManana[i]+recaudacionesTarde[i]));
+			System.out.println("MONTO RECAUDADO EN LA MAÑANA "+recaudacionesManana[i]);
+			System.out.println("MONTO RECAUDADO EN LA TARDE "+recaudacionesTarde[i]);
+			
+		}
 	}
-	
+	/**
+	 * 
+	 * @param nombresDePeliculas
+	 * @param horarios
+	 * @param cantidadPeliculas
+	 */
 	private static void cartelera(String[] nombresDePeliculas, String[] horarios, int cantidadPeliculas) {
 		System.out.println("**********************************************************");
 		System.out.println("PELICULAS EN CARTELERA");
