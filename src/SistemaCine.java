@@ -242,19 +242,30 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//TAQUILLA
-						taquilla(nombresDePeliculas,recaudaciones,recaudacionesManana, recaudacionesTarde,
+						taquilla(nombresDePeliculas,recaudaciones,recaudacionesManana,
+								recaudacionesTarde,
 								cantidadPeliculas);
 					}
 					case 2: {
 						//INFORMACION DE CLIENTE
-											
+						informacionCliente(scan,nombres,apellidos,saldos,entradasCompradas,
+								nombresDePeliculas,
+								horarios,cantidadUsuarios,cantidadPeliculas);
+						
 					}
 					case 3: {
 						//INICIAR OTRA SESION
+						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, 
+								saldos, estados, nombresDePeliculas, tiposDePeliculas, 
+								recaudaciones, recaudacionesManana, recaudacionesTarde, 
+								horarios, entradasCompradas, asientos, cantidadUsuarios, 
+								cantidadPeliculas);
 						
 					}
 					case 4: {
 						//CERRAR SISTEMA
+						cerrarSistema(nombres, apellidos, ruts, contrasenias,
+								saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
 						
 					}
 					default:
@@ -272,7 +283,7 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//COMPRAR ENTRADA
-
+						
 						System.out.print("Ingrese el nombre de la pelicula: ");
 						String nombrePelicula=scan.nextLine();
 						String [] horariosPeli=desplegarHorario(scan,nombrePelicula,nombresDePeliculas,
@@ -315,6 +326,9 @@ public class SistemaCine {
 					}
 					case 2:{
 						//INFORMACION DE USUARIO
+						infomacionUsuario(rutInput,ruts,nombres,apellidos,
+								saldos,nombresDePeliculas,entradasCompradas,
+								cantidadUsuarios,cantidadPeliculas);
 						
 						
 					}
@@ -334,6 +348,8 @@ public class SistemaCine {
 					}
 					case 6:{
 						//CERRAR SISTEMA
+						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
+						
 						
 					}
 					default:{
@@ -348,6 +364,38 @@ public class SistemaCine {
 		}
 	}
 	
+	private static void informacionCliente(Scanner scan, String[] nombres, String[] apellidos, double[] saldos,
+			String[][] entradasCompradas, String[] nombresDePeliculas, String[] horarios, int cantidadUsuarios, int cantidadPeliculas) {
+		System.out.print("INGRESE EL RUT DEL CLIENTE: ");
+		String rut=scan.nextLine();
+		int indexRut=buscarIndice(rut, horarios);
+		if(indexRut!=-1) {
+			System.out.println("EL CLIENTE "+nombres[indexRut].toUpperCase()+" "+apellidos[indexRut].toUpperCase());
+			System.out.println("CON SALDO: "+saldos[indexRut]);
+			desplegarEntradas(indexRut,entradasCompradas,cantidadPeliculas,nombresDePeliculas);
+		}
+		else {
+			System.out.println("***** NO EXISTE EL CLIENTE *****");
+		}
+	}
+
+	private static void desplegarEntradas(int indexRut, String[][] entradasCompradas, int cantidadPeliculas, String[] nombresDePeliculas) {
+		
+		for(int i=0;i<cantidadPeliculas;i++) {
+			if(entradasCompradas[indexRut][i]!=null){
+				System.out.println("ENTRADAS COMPRADAS PARA LA PELICULA "+nombresDePeliculas[i]);
+				String [] infoInventario=entradasCompradas[indexRut][i].split("/");
+				String [] horarios=infoInventario[0].split(",");
+				String [] asientos=infoInventario[1].split(",");
+				for(int j=0;j<horarios.length;j++) {
+					System.out.println("Asiento "+asientos[j]+" horario "+horarios[j]);
+				}
+			}
+			
+		}
+		
+	}
+
 	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
 			double[] recaudacionesTarde, int cantidadPeliculas) {
 		for(int i=0; i<cantidadPeliculas;i++) {
@@ -394,24 +442,7 @@ public class SistemaCine {
 		System.out.println("NOMBRE "+nombres[index].toUpperCase()+" "+apellidos[index].toUpperCase());
 		System.out.println("SALDO"+saldos[index]);
 		System.out.println("ENTRADAS COMPRADAS: ");
-		
-		//INVENTARIO
-		for(int i=0;i<cantidadPeliculas;i++) {
-			if(entradasCompradas[index][i]!=null) {
-				String [] entradas=entradasCompradas[index][i].split("/");
-				int total=entradas.length;
-				System.out.println("PARA LA PELICULA "+nombresDePeliculas[i].toUpperCase()+" COMPRO "+total+" ENTRADAS");
-				System.out.println("SE COMPRARON LOS SIGUIENTES ASIENTOS");
-				System.out.println("([M] MAÑANA [T] TARDE)");
-				for(int j=0;j<total;j++) {
-					String [] asientos=entradas[j].split(",");
-					String asiento=asientos[0];
-					String funcion=asientos[1];
-					System.out.print("EL ASIENTO "+asiento.toUpperCase()+" DE LA FUNCION "+funcion.toUpperCase());
-				}
-			}
-		}
-		
+		desplegarEntradas(index,entradasCompradas, cantidadPeliculas, nombresDePeliculas);
 		
 	}
 
