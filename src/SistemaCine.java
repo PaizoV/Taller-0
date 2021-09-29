@@ -486,7 +486,7 @@ public class SistemaCine {
 			String[] tiposDePeliculas, double[] recaudaciones, String[] horarios, int cantidadUsuarios,
 			int cantidadPeliculas) {
 		// TODO Auto-generated method stub
-		
+		System.out.println("hola mundo");
 	}
 
 	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, String[] nombres,
