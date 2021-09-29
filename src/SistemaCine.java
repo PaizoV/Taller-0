@@ -21,6 +21,8 @@ public class SistemaCine {
 		String[] tiposDePeliculas = new String[1000];
 		double[] recaudaciones = new double[1000];
 		String[] horarios = new String [1000];
+		double[] recaudacionesManana = new double[1000];
+		double[] recaudacionesTarde = new double[1000];
 		
 		// Inventory and seats' matrixes
 		String[][] entradasCompradas = new String[1000][1000];
@@ -33,7 +35,7 @@ public class SistemaCine {
 		
 		// Login
 		iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, nombresDePeliculas, tiposDePeliculas,
-				recaudaciones, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
+				recaudaciones, recaudacionesManana, recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
 	}
 	
 	/**
@@ -102,6 +104,10 @@ public class SistemaCine {
 		return i;
 	}
 	
+	/**
+	 * Fills the cubic matrix with strings for later use.
+	 * @param asientos The cubic matrix.
+	 */
 	public static void rellenarAsientos(String[][][] asientos) {
 		// First we fill the entire matrix with "disponible"
 		for (int i = 0; i < 10; i++) {
@@ -126,8 +132,8 @@ public class SistemaCine {
 
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
 			String[] contrasenias, double[] saldos, String[] estados, String[] nombresDePeliculas,
-			String[] tiposDePeliculas, double[] recaudaciones, String[] horarios, String[][] entradasCompradas,
-			String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) {
+			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
+			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) {
 		while(true) {
 			System.out.println("\n**********************************************************");
 			System.out.println("INICIAR SESION");
@@ -234,7 +240,8 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//TAQUILLA
-						
+						taquilla(nombresDePeliculas,recaudaciones,recaudacionesManana, recaudacionesTarde,
+								cantidadPeliculas);
 					}
 					case 2: {
 						//INFORMACION DE CLIENTE
@@ -320,8 +327,8 @@ public class SistemaCine {
 					case 5:{
 						//INICIAR OTRA SESION
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos,
-								 estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, 
-								 horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
+								 estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, recaudacionesManana, 
+								 recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
 					}
 					case 6:{
 						//CERRAR SISTEMA
@@ -337,6 +344,61 @@ public class SistemaCine {
 				}
 			}
 		}
+	}
+	
+	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
+			double[] recaudacionesTarde, int cantidadPeliculas) {
+		
+	}
+	
+	private static void cartelera(String[] nombresDePeliculas, String[] horarios, int cantidadPeliculas) {
+		System.out.println("**********************************************************");
+		System.out.println("PELICULAS EN CARTELERA");
+		System.out.println("**********************************************************");
+		for(int i=0;i<cantidadPeliculas;i++) {
+			
+			String [] partes=horarios[i].split("/");
+			System.out.println(nombresDePeliculas[i].toUpperCase()+" NUMERO DE FUNCIONES "+partes.length);
+			for(int j=0;j<partes.length;j++) {
+				if(partes[1].equals("M")) {
+					System.out.println("FUNCION ["+(j+1)+"] EN LA SALA "+ partes[0]+" HORARIO MAÑANA");
+				}else
+				if(partes[1].equals("T")) {
+					System.out.println("FUNCION ["+(j+1)+"] EN LA SALA "+ partes[0]+" HORARIO TARDE");
+				}
+				
+			}
+		}
+		
+	}
+	
+	private static void infomacionUsuario(String rutInput, String[] ruts, String[] nombres, String[] apellidos, double[] saldos,
+			String[] nombresDePeliculas, String[][] entradasCompradas, int cantidadUsuarios, int cantidadPeliculas) {
+		int index=buscarIndice(rutInput, ruts);
+		System.out.println("***** INFORMACION DEL USUARIO *****");
+		System.out.println("CLIENTE "+ruts[index]);
+		System.out.println("NOMBRE "+nombres[index].toUpperCase()+" "+apellidos[index].toUpperCase());
+		System.out.println("SALDO"+saldos[index]);
+		System.out.println("ENTRADAS COMPRADAS: ");
+		
+		//INVENTARIO
+		for(int i=0;i<cantidadPeliculas;i++) {
+			if(entradasCompradas[index][i]!=null) {
+				String [] entradas=entradasCompradas[index][i].split("/");
+				int total=entradas.length;
+				System.out.println("PARA LA PELICULA "+nombresDePeliculas[i].toUpperCase()+" COMPRO "+total+" ENTRADAS");
+				System.out.println("SE COMPRARON LOS SIGUIENTES ASIENTOS");
+				System.out.println("([M] MAÑANA [T] TARDE)");
+				for(int j=0;j<total;j++) {
+					String [] asientos=entradas[j].split(",");
+					String asiento=asientos[0];
+					String funcion=asientos[1];
+					System.out.print("EL ASIENTO "+asiento.toUpperCase()+" DE LA FUNCION "+funcion.toUpperCase());
+				}
+			}
+		}
+		
+		
 	}
 
 	private static void calcularTotalCompra(String[][][] asientos) {
