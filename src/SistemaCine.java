@@ -32,10 +32,11 @@ public class SistemaCine {
 		int cantidadUsuarios = leerArchivoClientes(nombres, apellidos, ruts, contrasenias, saldos);
 		leerArchivoStatus(ruts, estados);
 		int cantidadPeliculas = leerArchivoPeliculas(nombresDePeliculas, tiposDePeliculas, recaudaciones, horarios);
-		
+		System.out.println("hola mundo");
 		// Login
 		iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, nombresDePeliculas, tiposDePeliculas,
 				recaudaciones, recaudacionesManana, recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
+		
 	}
 	
 	/**
@@ -142,7 +143,7 @@ public class SistemaCine {
 			String rutInput = scan.nextLine();
 			rutInput = cambiarFormato(rutInput);
 			//valida si el usuario esta registrado
-			Boolean validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
+			boolean validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
 			
 			while(validarUsuario==false) {
 					desplegarMenuErrorDeIngreso();	
@@ -200,7 +201,7 @@ public class SistemaCine {
 			//VERIFICACION DE LA CONTRASEÑA
 			System.out.print("\nCONTRASEÑA:");
 			String claveInput = scan.nextLine();
-			Boolean ingresoDeClave=verificacionDeClave(scan,rutInput,ruts,contrasenias,claveInput,cantidadUsuarios);
+			boolean ingresoDeClave=verificacionDeClave(scan,rutInput,ruts,contrasenias,claveInput,cantidadUsuarios);
 			
 			//CONTRASEÑA INCORRECTA
 			while(ingresoDeClave==false) {
