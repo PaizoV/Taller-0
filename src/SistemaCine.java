@@ -1,6 +1,7 @@
 import java.util.Scanner;
 import java.io.File;
 import java.io.IOException;
+import java.io.FileWriter;
 
 public class SistemaCine {
 
@@ -32,7 +33,7 @@ public class SistemaCine {
 		int cantidadUsuarios = leerArchivoClientes(nombres, apellidos, ruts, contrasenias, saldos);
 		leerArchivoStatus(ruts, estados);
 		int cantidadPeliculas = leerArchivoPeliculas(nombresDePeliculas, tiposDePeliculas, recaudaciones, horarios);
-		System.out.println("hola mundo");
+		
 		// Login
 		iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, nombresDePeliculas, tiposDePeliculas,
 				recaudaciones, recaudacionesManana, recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
@@ -134,7 +135,7 @@ public class SistemaCine {
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
 			String[] contrasenias, double[] saldos, String[] estados, String[] nombresDePeliculas,
 			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
-			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) {
+			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
 		while(true) {
 			System.out.println("\n**********************************************************");
 			System.out.println("INICIAR SESION");
@@ -186,7 +187,7 @@ public class SistemaCine {
 						else {
 					//CERRAR SISTEMA
 							if (op ==3) {
-								cerrarSistema(scan,nombres,apellidos,ruts,contrasenias,saldos,estados,
+								cerrarSistema(nombres,apellidos,ruts,contrasenias,saldos,
 								nombresDePeliculas,tiposDePeliculas,recaudaciones,horarios, cantidadUsuarios, cantidadPeliculas);
 							} 
 					//OPCION INVALIDA
@@ -219,8 +220,8 @@ public class SistemaCine {
 				}else
 				//CERRAR SISTEMA
 				if(op==2) {
-					cerrarSistema(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, 
-					nombresDePeliculas, tiposDePeliculas, recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas);
+					cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, 
+							recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas);
 									
 				}
 			    // OPCION INVALIDA
@@ -492,13 +493,51 @@ public class SistemaCine {
 		
 		return false;
 	}
-
-	private static void cerrarSistema(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
-			String[] contrasenias, double[] saldos, String[] estados, String[] nombresDePeliculas,
-			String[] tiposDePeliculas, double[] recaudaciones, String[] horarios, int cantidadUsuarios,
-			int cantidadPeliculas) {
-		// TODO Auto-generated method stub
-		System.out.println("hola mundo");
+	
+	/**
+	 * Writes to the text files "clientes.txt" and "peliculas.txt" with the updated information.
+	 * @param nombres The first names of the users.
+	 * @param apellidos The last names of the users.
+	 * @param ruts The RUT of the users.
+	 * @param contrasenias The passwords of the users.
+	 * @param saldos The amount of money users have.
+	 * @param nombresDePeliculas The names of the films.
+	 * @param tiposDePeliculas If the films are a premiere or not.
+	 * @param recaudaciones The total amount of money films have generated.
+	 * @param horarios The avalaible times for the films.
+	 * @param cantidadUsuarios The amount of registered users in the system.
+	 * @param cantidadPeliculas The amount of films in the system.
+	 * @throws IOException
+	 */
+	private static void cerrarSistema(String[] nombres, String[] apellidos, String[] ruts,
+			String[] contrasenias, double[] saldos, String[] nombresDePeliculas, String[] tiposDePeliculas, 
+			double[] recaudaciones, String[] horarios, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
+		// "clientes.txt" text file writing
+		String contenidoClientes = "";
+		for (int i = 0; i < cantidadUsuarios; i++) {
+			String nombre = nombres[i];
+			String apellido = apellidos[i];
+			String rut = ruts[i];
+			String contrasenia = contrasenias[i];
+			double saldo = saldos[i];
+			contenidoClientes += nombre + "," + apellido + "," + rut + "," + contrasenia + "," + saldo + "\n";
+		}
+		FileWriter writerClientes = new FileWriter("clientes.txt");
+		writerClientes.write(contenidoClientes);
+		writerClientes.close();
+		
+		// "peliculas.txt" text file writing
+		String contenidoPeliculas = "";
+		for (int i = 0; i < cantidadPeliculas; i++) {
+			String nombrePeli = nombresDePeliculas[i];
+			String tipoPeli = tiposDePeliculas[i];
+			double recaudacion = recaudaciones[i];
+			String horario = horarios[i];
+			contenidoPeliculas += nombrePeli + "," + tipoPeli + "," + recaudacion + "," + horario + "\n";
+		}
+		FileWriter writerPeliculas = new FileWriter("peliculas.txt");
+		writerPeliculas.write(contenidoPeliculas);
+		writerPeliculas.close();
 	}
 
 	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, String[] nombres,
