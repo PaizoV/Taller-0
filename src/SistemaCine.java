@@ -131,152 +131,175 @@ public class SistemaCine {
 			}
 		}
 	}
+	
+	/**
+	 * Prints a string several times.
+	 * @param str The string to be printed.
+	 * @param n The number of prints.
+	 */
+	private static void printlnRepeat(String str, int n) {
+		for (int i = 0; i < n; i++) {
+			System.out.print(str);
+		}
+		System.out.println();
+	}
 
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
 			String[] contrasenias, double[] saldos, String[] estados, String[] nombresDePeliculas,
 			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
 			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
-		while(true) {
-			System.out.println("\n**********************************************************");
+		while (true) {
+			printlnRepeat("*", 50);
 			System.out.println("INICIAR SESION");
-			System.out.println("**********************************************************");
-			System.out.print("\nRUT:");
-			String rutInput = scan.nextLine();
-			rutInput = cambiarFormato(rutInput);
-			//valida si el usuario esta registrado
-			boolean validarUsuario=buscarRut(rutInput,ruts);
+			printlnRepeat("*", 50);
+			System.out.print("\nIngrese RUT: ");
+			String rutInput = cambiarFormato(scan.nextLine());
+			int indiceRut = buscarIndice(rutInput, ruts);	// Checks if the user is registered
 			
-			while(validarUsuario==false) {
-					desplegarMenuErrorDeIngreso();	
-					System.out.print("\nOPCION: ");
-					int op = Integer.parseInt(scan.nextLine());
-					//INTENTAR NUEVAMENTE
-					if (op == 1) {
-						System.out.println("\n**********************************************************");
-						System.out.println("INTENTA INICIAR SESION NUEVAMENTE");
-						System.out.println("**********************************************************");
-						System.out.print("\nRUT:");
-						rutInput = scan.nextLine();
-						rutInput = cambiarFormato(rutInput);
-						validarUsuario=buscarRut(rutInput,ruts);
-					}
-					else {
-					//REGISTRAR NUEVO USUARIO
-						if (op == 2) {
-							System.out.println("\n**********************************************************");
-							System.out.println("REGISTRAR NUEVO USUARIO (RUT: "+rutInput+")");
-							System.out.println("**********************************************************");
-							System.out.println("\nNOMBRE: ");
-							String nombreInput = scan.nextLine();
-							System.out.println("\nAPELLIDO:");
-							String apellidoInput = scan.nextLine();
-							System.out.print("\nCONTRASEÑA:");
-							String claveInput = scan.nextLine();
-							registrarNuevoUsuario(rutInput, ruts, nombreInput, nombres, apellidoInput, apellidos, 
-									claveInput, contrasenias, cantidadUsuarios);
-							cantidadUsuarios++;
-							
-							System.out.println("\n**********************************************************");
-							System.out.println("INICIAR SESION");
-							System.out.println("**********************************************************");
-							System.out.print("\nRUT:");
-							rutInput = scan.nextLine();
-							rutInput = cambiarFormato(rutInput);
-							validarUsuario=buscarRut(rutInput,ruts);
-						} 
-						else {
-					//CERRAR SISTEMA
-							if (op ==3) {
-								cerrarSistema(nombres,apellidos,ruts,contrasenias,saldos,
-								nombresDePeliculas,tiposDePeliculas,recaudaciones,horarios, cantidadUsuarios, cantidadPeliculas);
-							} 
-					//OPCION INVALIDA
-							else {
-								System.out.println("Opcion invalida.");
-								continue;
-							}
-						}
-					}
-				}//fin del while
+			while (indiceRut == -1 && !rutInput.equals("ADMIN")) {
+				System.out.println();
+				printlnRepeat("*", 30);
+				System.out.println("ERROR: USUARIO NO REGISTRADO");
+				printlnRepeat("*", 30);
+				System.out.println("\n[1] INICIAR SESION NUEVAMENTE");
+				System.out.println("[2] REGISTRAR NUEVO USUARIO");
+				System.out.println("[3] CERRAR SISTEMA");
+				System.out.print("\nOPCION: ");
+				String op = scan.nextLine();
+				if (op.equals("1")) {
+					// Try again
+					printlnRepeat("*", 30);
+					System.out.println("INTENTA INICIAR SESION NUEVAMENTE");
+					printlnRepeat("*", 30);
+					System.out.print("\nRUT: ");
+					
+					rutInput = cambiarFormato(scan.nextLine());
+					indiceRut = buscarIndice(rutInput, ruts);
+				}
+				else if (op.equals("2")) {
+					// Register new user
+					printlnRepeat("*", 30);
+					System.out.println("REGISTRAR NUEVO USUARIO (RUT: " + rutInput + ")");
+					printlnRepeat("*", 30);
+					System.out.println("\nNOMBRE: ");
+					String nombreInput = scan.nextLine();
+					System.out.println("\nAPELLIDO: ");
+					String apellidoInput = scan.nextLine();
+					System.out.print("\nCONTRASEÑA: ");
+					String claveInput = scan.nextLine();
+					
+					registrarNuevoUsuario(rutInput, ruts, nombreInput, nombres, apellidoInput, apellidos, 
+							claveInput, contrasenias, cantidadUsuarios);
+					cantidadUsuarios++;
+					break;
+				} 
+				else if (op.equals("3")) {
+					// Close system
+					cerrarSistema(nombres,apellidos,ruts,contrasenias,saldos, nombresDePeliculas,
+							tiposDePeliculas,recaudaciones,horarios, cantidadUsuarios, cantidadPeliculas);
+				} 
+				else {
+					// Invalid option
+					System.out.println("OPCION INVALIDA");
+				}
+			}
 			
 			//VERIFICACION DE LA CONTRASEÑA
 			System.out.print("\nCONTRASEÑA:");
 			String claveInput = scan.nextLine();
-			boolean ingresoDeClave=verificacionDeClave(scan,rutInput,ruts,contrasenias,claveInput,cantidadUsuarios);
+			boolean ingresoDeClave = verificacionDeClave(rutInput, ruts, claveInput, contrasenias);
 			
 			//CONTRASEÑA INCORRECTA
-			while(ingresoDeClave==false) {
-				desplegarMenuErrorClave();
-				System.out.println("\nOPCION: ");
-				int op = Integer.parseInt(scan.nextLine());
-				//REINTENTAR 
-				if (op == 1) {
-					System.out.println("\n**********************************************************");
+			while (!ingresoDeClave) {
+				printlnRepeat("*", 30);
+				System.out.println("ERROR: CLAVE INCORRECTA");
+				printlnRepeat("*", 30);
+				System.out.println("[1] INGRESAR CLAVE NUEVAMENTE");
+				System.out.println("[2] CERRAR SISTEMA");
+				System.out.print("\nOPCION: ");
+				String op = scan.nextLine();
+				 
+				if (op.equals("1")) {
+					//REINTENTAR
+					printlnRepeat("*", 30);
 					System.out.println("INTENTA CONTRASEÑA NUEVAMENTE");
-					System.out.println("**********************************************************");
-					System.out.println("\nCONTRASEÑA:");
+					printlnRepeat("*", 30);
+					System.out.print("\nCONTRASEÑA: ");
 					claveInput = scan.nextLine();
-					ingresoDeClave=verificacionDeClave(scan,rutInput,ruts,contrasenias,claveInput,cantidadUsuarios);
-				}else
-				//CERRAR SISTEMA
-				if(op==2) {
-					cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, 
-							recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas);
-									
+					ingresoDeClave = verificacionDeClave(rutInput, ruts,claveInput, contrasenias);
 				}
-			    // OPCION INVALIDA
+				else if (op.equals("2")) {
+					//CERRAR SISTEMA
+					cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, 
+							tiposDePeliculas, recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas);				
+				}
 				else {
-					System.out.println("Opcion invalida.");
-					continue;
+					// OPCION INVALIDA
+					System.out.println("OPCION INVALIDA");
 				}
 			}
 			
-			//CONTRASEÑA CORRECTA
-			//MENU CLIENTE Y ADMIN
-			while(ingresoDeClave) {
-				//MENU ADMIN
-				if(rutInput.equals("ADMIN")&& claveInput.equals("ADMIN")) {
-					desplegarMenuAdmin();
+			// Correct password
+			// User menu and Admin menu
+			
+			if (rutInput.equals("ADMIN") && claveInput.equals("ADMIN")) {
+				while (true) {
+					// Admin's menu
+					System.out.println();
+					printlnRepeat("*", 30);
+					System.out.println("MENU ADMIN");
+					printlnRepeat("*", 30);
+					System.out.println("\n[1] TAQUILLA");
+					System.out.println("[2] INFORMACION DE CLIENTE");
+					System.out.println("[3] INICIAR OTRA SESION");	
+					System.out.println("[4] CERRAR SISTEMA");
 					System.out.println("\nOPCION: ");
-					int op=Integer.parseInt(scan.nextLine());
+
+					String op = scan.nextLine();
 					switch (op) {
-					case 1: {
+					case "1":
 						//TAQUILLA
-						taquilla(nombresDePeliculas,recaudaciones,recaudacionesManana,
-								recaudacionesTarde,
-								cantidadPeliculas);
-					}
-					case 2: {
+						taquilla(nombresDePeliculas, recaudaciones, recaudacionesManana, 
+								recaudacionesTarde, cantidadPeliculas);
+						break;
+					case "2": 
 						//INFORMACION DE CLIENTE
-						informacionCliente(scan,nombres,apellidos,saldos,entradasCompradas,
-								nombresDePeliculas,
-								horarios,cantidadUsuarios,cantidadPeliculas);
-						
-					}
-					case 3: {
+						informacionCliente(scan, nombres, apellidos, saldos, entradasCompradas,
+								nombresDePeliculas, horarios, cantidadUsuarios, cantidadPeliculas);
+						break;
+					case "3":
 						//INICIAR OTRA SESION
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, 
 								saldos, estados, nombresDePeliculas, tiposDePeliculas, 
 								recaudaciones, recaudacionesManana, recaudacionesTarde, 
 								horarios, entradasCompradas, asientos, cantidadUsuarios, 
 								cantidadPeliculas);
-						
-					}
-					case 4: {
+						break;
+					case "4":
 						//CERRAR SISTEMA
-						cerrarSistema(nombres, apellidos, ruts, contrasenias,
-								saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
-						
-					}
+						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas,
+								tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
+						break;
 					default:
 						//OPCION INVALIDA
-						System.out.println("\nOpcion invalida.");
+						System.out.println("\nOPCION INVALIDA\n");
+						printlnRepeat("*", 30);
+						System.out.println("MENU ADMIN");
+						printlnRepeat("*", 30);
+						System.out.println("1] TAQUILLA");
+						System.out.println("[2] INFORMACION DE CLIENTE");
+						System.out.println("[3] INICIAR OTRA SESION");	
+						System.out.println("[4] CERRAR SISTEMA");
+						System.out.println("\nOPCION: ");
+
+						op = scan.nextLine();
 						continue;
 					}
-									
+					break;
 				}
-				//MENU CLIENTE
-				else {
+			}
+			//MENU CLIENTE
+			else {
 					desplegarMenuCliente();
 					System.out.println("\nOPCION: ");
 					int op = Integer.parseInt(scan.nextLine());
@@ -394,7 +417,7 @@ public class SistemaCine {
 					}
 				}
 			}
-		}
+		
 	}
 	
 	private static int obtenerIAsiento(String asiento) {
@@ -651,43 +674,38 @@ public class SistemaCine {
 	}
 
 	private static void desplegarMenuCliente() {
-		
-			System.out.println("\n**********************************************************");
-			System.out.println("MENU CLIENTE");
-			System.out.println("**********************************************************\n");
-			System.out.println("[1] COMPRAR ENTRADA");
-			System.out.println("[2] INFORMACION DE USUARIO");
-			System.out.println("[3] DEVOLUCION DE ENTRADA");
-			System.out.println("[4] CARTELERA");
-			System.out.println("[5] INICIAR OTRA SESION");
-			System.out.println("[6] CERRAR SISTEMA");	
+		System.out.println();
+		printlnRepeat("*", 30);
+		System.out.println("\nMENU CLIENTE");
+		printlnRepeat("*", 30);
+		System.out.println("[1] COMPRAR ENTRADA");
+		System.out.println("[2] INFORMACION DE USUARIO");
+		System.out.println("[3] DEVOLUCION DE ENTRADA");
+		System.out.println("[4] CARTELERA");
+		System.out.println("[5] INICIAR OTRA SESION");
+		System.out.println("[6] CERRAR SISTEMA");	
 		}
 
-	private static void desplegarMenuAdmin() {
-			System.out.println("\n**********************************************************");
-			System.out.println("MENU ADMIN");
-			System.out.println("**********************************************************\n");
-			System.out.println("[1] TAQUILLA");
-			System.out.println("[2] INFORMACION DE CLIENTE");
-			System.out.println("[3] INICIAR OTRA SESION");	
-			System.out.println("[4] CERRAR SISTEMA");
-		
-	}
-
-	private static Boolean verificacionDeClave(Scanner scan, String rutInput, String[] ruts, String[] contrasenias,
-			String claveInput, int cantidadUsuarios) {
-		int i;
-		if(cantidadUsuarios!=0) {
-			for(i=0;i<cantidadUsuarios;i++) {
-				if(contrasenias[i].equals(claveInput)) {
-					return true;
-				}
-			}
-		}else 
-			if(rutInput.equals("ADMIN")&&claveInput.equals("ADMIN")) {
+	/**
+	 * 
+	 * @param rutInput
+	 * @param ruts
+	 * @param clave
+	 * @param contrasenias
+	 * @return
+	 */
+	private static boolean verificacionDeClave(String rutInput, String[] ruts, String clave, String[] contrasenias) {
+		if (rutInput.equals("ADMIN")) {
+			if (clave.equals("ADMIN")) {
 				return true;
 			}
-		
+		}
+		else {
+			int i = buscarIndice(rutInput, ruts);
+			if (contrasenias[i].equals(clave)) {
+				return true;
+			}
+		}
 		return false;
 	}
 	
@@ -737,41 +755,14 @@ public class SistemaCine {
 		writerPeliculas.close();
 	}
 
-	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, String[] nombres,
-			String apellidoInput, String[] apellidos, String claveInput, String[] contrasenias, int cantidadUsuarios) {
-		
-			ruts[cantidadUsuarios]=rutInput;
-			nombres[cantidadUsuarios]=nombreInput;
-			apellidos[cantidadUsuarios] = apellidoInput;
-			contrasenias[cantidadUsuarios] = claveInput;
-			System.out.print("\nRegistro exitoso.");
-		
-	}
-
-	private static void desplegarMenuErrorDeIngreso() {
-			System.out.println("\n**********************************************************");
-			System.out.println("ERROR: USUARIO NO REGISTRADO");
-			System.out.println("**********************************************************\n");
-			System.out.println("[1] INTENTAR INICIAR SESION NUEVAMENTE");
-			System.out.println("[2] REGISTRAR NUEVO USUARIO");
-			System.out.println("[3] CERRAR SISTEMA");
-		}
-
-	private static void desplegarMenuErrorClave() {
-			System.out.println("\n**********************************************************");
-			System.out.println("ERROR: CLAVE INCORRECTA");
-			System.out.println("**********************************************************\n");
-			System.out.println("[1] INTENTAR CLAVE NUEVAMENTE");
-			System.out.println("[2] CERRAR SISTEMA");
-	}
-	private static boolean buscarRut(String rut, String[] ruts) {
-		int indiceRut = buscarIndice(rut, ruts);
-		if ((indiceRut != -1) || (rut.equals("ADMIN"))) {
-			return true;
-		}
-		else {
-			return false;
-		}
+	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, 
+			String[] nombres, String apellidoInput, String[] apellidos, String claveInput, 
+			String[] contrasenias, int cantUsuarios) {
+		ruts[cantUsuarios] = rutInput;
+		nombres[cantUsuarios] = nombreInput;
+		apellidos[cantUsuarios] = apellidoInput;
+		contrasenias[cantUsuarios] = claveInput;
+		System.out.println("\nREGISTRO EXITOSO!");
 	}
 
 	/**
