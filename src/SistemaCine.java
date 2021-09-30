@@ -283,14 +283,31 @@ public class SistemaCine {
 					switch (op) {
 					case 1: {
 						//COMPRAR ENTRADA
-						
-						System.out.print("Ingrese el nombre de la pelicula: ");
-						String nombrePelicula=scan.nextLine();
-						String [] horariosPeli=desplegarHorario(scan,nombrePelicula,nombresDePeliculas,
-											   horarios,cantidadPeliculas);
-						System.out.print("Ingrese el numero de la funcion: ");
-						int numFuncion=scan.nextInt();
-						desplegarAsientos(asientos,horariosPeli,numFuncion);
+						int indicePeli = 0;
+						while (true) {
+							System.out.print("Ingrese el nombre de la pelicula: ");
+							String nombrePeli = scan.nextLine();
+							indicePeli = buscarIndice(nombrePeli, nombresDePeliculas);
+							if (indicePeli == -1) {
+								System.out.println("No existe la pelicula. Intente nuevamente");
+							}
+							else {
+								break;
+							}
+						}
+						String[] horariosPeli = desplegarHorarios(indicePeli, horarios);
+						String funcion;
+						while (true) {
+							System.out.print("Ingrese la funcion: ");
+							funcion = scan.nextLine();
+							if (buscarIndice(funcion, horariosPeli) == -1) {
+								System.out.println("Funcion invalida. Intente nuevamente");
+							}
+							else {
+								break;
+							}
+						}
+						desplegarAsientos(asientos, funcion);
 						System.out.print("Ingrese el numero de entradas: ");
 						int numAsientos=scan.nextInt();
 						for(int i=0;i<numAsientos;i++) {
@@ -450,10 +467,39 @@ public class SistemaCine {
 		// TODO Auto-generated method stub
 		
 	}
+	
+	private static int obtenerKMatriz(String funcion) {
+		int k = -1;
+		switch (funcion) {
+		case "1m":
+		case "1M":
+			k = 0;
+			break;
+		case "1t":
+		case "1T":
+			k = 1;
+			break;
+		case "2m":
+		case "2M":
+			k = 2;
+			break;
+		case "2t":
+		case "2T":
+			k = 3;
+			break;
+		case "3m":
+		case "3M":
+			k = 4;
+			break;
+		case "3t":
+		case "3T":
+			k = 5;
+			break;
+		}
+		return k;
+	}
 
-	private static void desplegarAsientos(String[][][] asientos, String[] horariosPeli, int numFuncion) {
-		//Asientos disponibles
-		
+	private static void desplegarAsientos(String[][][] asientos, String funcion) {
 		
 	}
 
@@ -461,16 +507,16 @@ public class SistemaCine {
 	 * Prints every avalaible schedule for a movie.
 	 * @param indicePeli The index of the movie.
 	 * @param horarios The schedules for the movies.
-	 * @return A String array with the avalaible schedules fot the specified movie.
+	 * @return A String array with the avalaible schedules for the specified movie.
 	 */
 	private static String [] desplegarHorarios(int indicePeli, String[] horarios) {
 		String[] partes = horarios[indicePeli].split(",");
 		String[] funciones = new String[partes.length / 2];
 		int j = 0;
 		for (int i = 0; i < partes.length; i += 2) {
-			String funcion = partes[i] + partes[i + 1];
-			System.out.println(funcion);
-			funciones[j] = funcion;
+			String horario = partes[i] + partes[i + 1];
+			System.out.println(horario);
+			funciones[j] = horario;
 			j++;
 		}
 		return funciones;
