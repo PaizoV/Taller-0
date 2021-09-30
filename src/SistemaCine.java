@@ -214,7 +214,7 @@ public class SistemaCine {
 				printlnRepeat("*", 30);
 				System.out.println("ERROR: CLAVE INCORRECTA");
 				printlnRepeat("*", 30);
-				System.out.println("[1] INGRESAR CLAVE NUEVAMENTE");
+				System.out.println("\n[1] INGRESAR CLAVE NUEVAMENTE");
 				System.out.println("[2] CERRAR SISTEMA");
 				System.out.print("\nOPCION: ");
 				String op = scan.nextLine();
@@ -300,11 +300,12 @@ public class SistemaCine {
 			}
 			//MENU CLIENTE
 			else {
-					desplegarMenuCliente();
-					System.out.println("\nOPCION: ");
-					int op = Integer.parseInt(scan.nextLine());
+				desplegarMenuCliente();
+				System.out.println("\nOPCION: ");
+				String op = scan.nextLine();
+				while (true) {
 					switch (op) {
-					case 1: {
+					case "1": 
 						//COMPRAR ENTRADA
 						int indicePeli = 0;
 						while (true) {
@@ -366,58 +367,56 @@ public class SistemaCine {
 							switch (op2) {
 							case 1: {
 								//RECARGAR SALDO 
-								
+
 							}
 							case 2:{
 								//CANCELAR
 								System.out.println("CANCELADO . . .");
 								continue;
 							}
-						}	
+							}	
 						}
 						else {
 							System.out.println("COMPRA NO REALIZADA . . .");
-						    continue;
+							continue;
 						}
-					}
-					case 2:{
+						break;
+					case "2":
 						//INFORMACION DE USUARIO
 						infomacionUsuario(rutInput,ruts,nombres,apellidos,
 								saldos,nombresDePeliculas,entradasCompradas,
 								cantidadUsuarios,cantidadPeliculas);
-						
-						
-					}
-					case 3:{
+						break;					
+					case "3":
 						//DEVOLUCION DE ENTRADA
 						devolucionEntradas();
-					}
-					case 4:{
+						break;
+					case "5":
 						//CARTELERA
 						cartelera(nombresDePeliculas,horarios,cantidadPeliculas);
-					}
-					case 5:{
+						break;
+					case "6":
 						//INICIAR OTRA SESION
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos,
-								 estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, recaudacionesManana, 
-								 recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
-					}
-					case 6:{
+								estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, recaudacionesManana, 
+								recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
+						break;
+					case "7":
 						//CERRAR SISTEMA
 						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
-						
-						
-					}
-					default:{
+						break;
+					default:
 						//OPCION INVALIDA
-						System.out.println("\nOpcion invalida.");
-						 continue;						 
-						 
-						}
+						System.out.println("\nOPCION INVALIDA");
+						desplegarMenuCliente();
+						System.out.println("\nOPCION: ");
+						op = scan.nextLine();
+						continue;
 					}
+					break;
 				}
 			}
-		
+		}
 	}
 	
 	private static int obtenerIAsiento(String asiento) {
@@ -678,13 +677,13 @@ public class SistemaCine {
 		printlnRepeat("*", 30);
 		System.out.println("\nMENU CLIENTE");
 		printlnRepeat("*", 30);
-		System.out.println("[1] COMPRAR ENTRADA");
+		System.out.println("\n[1] COMPRAR ENTRADA");
 		System.out.println("[2] INFORMACION DE USUARIO");
 		System.out.println("[3] DEVOLUCION DE ENTRADA");
 		System.out.println("[4] CARTELERA");
 		System.out.println("[5] INICIAR OTRA SESION");
 		System.out.println("[6] CERRAR SISTEMA");	
-		}
+	}
 
 	/**
 	 * 
