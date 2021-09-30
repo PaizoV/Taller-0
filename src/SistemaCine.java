@@ -309,11 +309,12 @@ public class SistemaCine {
 						}
 						desplegarAsientos(asientos, funcion);
 						System.out.print("Ingrese el numero de entradas: ");
-						int numAsientos=scan.nextInt();
-						for(int i=0;i<numAsientos;i++) {
-							System.out.print("Seleccione un asiento para comprar: ");
-							String asientoSeleccionado=scan.nextLine();
-							//FALTA
+						int cantAsientos = Integer.parseInt(scan.nextLine());
+						for(int i = 0; i < cantAsientos; i++) {
+							while (true) {
+								System.out.print("Seleccione un asiento para comprar: ");
+								String asiento = scan.nextLine();
+							}
 						}
 						calcularTotalCompra(asientos);
 						//CONFIRMACION 
@@ -498,9 +499,60 @@ public class SistemaCine {
 		}
 		return k;
 	}
+	
+	private static String obtenerLetra(int i) {
+		String letra = "";
+		switch (i) {
+		case 0:
+			letra = "A";
+			break;
+		case 1:
+			letra = "B";
+			break;
+		case 2:
+			letra = "C";
+			break;
+		case 3:
+			letra = "D";
+			break;
+		case 4:
+			letra = "E";
+			break;
+		case 5:
+			letra = "F";
+			break;
+		case 6:
+			letra = "G";
+			break;
+		case 7:
+			letra = "H";
+			break;
+		case 8:
+			letra = "I";
+			break;
+		case 9:
+			letra = "J";
+			break;
+		}
+		return letra;
+	}
 
 	private static void desplegarAsientos(String[][][] asientos, String funcion) {
-		
+		int k = obtenerKMatriz(funcion);
+		for (int i = 0; i < 10; i++) {
+			String letra = obtenerLetra(i);
+			for (int j = 0; j < 30; j++) {
+				if (!asientos[i][j][k].equals("no disponible")) {
+					if (asientos[i][j][k].equals("disponible")) {
+						System.out.print(letra + (j + 1) + " (D) ");
+					}
+					else {
+						System.out.print(letra + (j + 1) + " (O) ");
+					}
+				}
+			}
+			System.out.println();
+		}
 	}
 
 	/**
