@@ -338,7 +338,7 @@ public class SistemaCine {
 					}
 					case 4:{
 						//CARTELERA
-						
+						cartelera(nombresDePeliculas,horarios,cantidadPeliculas);
 					}
 					case 5:{
 						//INICIAR OTRA SESION
@@ -375,7 +375,7 @@ public class SistemaCine {
 			desplegarEntradas(indexRut,entradasCompradas,cantidadPeliculas,nombresDePeliculas);
 		}
 		else {
-			System.out.println("***** NO EXISTE EL CLIENTE *****");
+			System.out.println("***** CLIENTE NO REGISTRADO *****");
 		}
 	}
 
@@ -417,22 +417,22 @@ public class SistemaCine {
 		System.out.println("**********************************************************");
 		System.out.println("PELICULAS EN CARTELERA");
 		System.out.println("**********************************************************");
+		//Arreglar
 		for(int i=0;i<cantidadPeliculas;i++) {
-			
-			String [] partes=horarios[i].split("/");
-			System.out.println(nombresDePeliculas[i].toUpperCase()+" NUMERO DE FUNCIONES "+partes.length);
-			for(int j=0;j<partes.length;j++) {
-				if(partes[1].equals("M")) {
-					System.out.println("FUNCION ["+(j+1)+"] EN LA SALA "+ partes[0]+" HORARIO MAÑANA");
+			String [] partes=horarios[i].split(",");
+			System.out.println(nombresDePeliculas[i].toUpperCase()+" NUMERO DE FUNCIONES "+(partes.length/2));
+			for(int j=0;j<(partes.length/2);j++) {
+				if(partes[(i*2)+1].equals("M")) {
+					System.out.println("FUNCION ["+(i+1)+"] EN LA SALA "+ partes[i*2]+" HORARIO MAÑANA");
 				}else
-				if(partes[1].equals("T")) {
-					System.out.println("FUNCION ["+(j+1)+"] EN LA SALA "+ partes[0]+" HORARIO TARDE");
+				if(partes[(i*2)+1].equals("T")) {
+						System.out.println("FUNCION ["+(i+1)+"] EN LA SALA "+ partes[i*2]+" HORARIO TARDE");
 				}
-				
 			}
 		}
-		
 	}
+		
+	
 	
 	private static void infomacionUsuario(String rutInput, String[] ruts, String[] nombres, String[] apellidos, double[] saldos,
 			String[] nombresDePeliculas, String[][] entradasCompradas, int cantidadUsuarios, int cantidadPeliculas) {
