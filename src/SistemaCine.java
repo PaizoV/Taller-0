@@ -457,26 +457,23 @@ public class SistemaCine {
 		
 	}
 
-	private static String [] desplegarHorario(Scanner scan, String nombrePelicula, String[] nombresDePeliculas, String[] horarios,
-			int cantidadPeliculas) {
-		//Buscar pelicula
-		int indicePelicula=buscarIndice(nombrePelicula, horarios);
-		String horariosDisponibles=horarios[indicePelicula];
-		String [] partes= horariosDisponibles.split("/");
-		int i;
-		//desplegar salas
-		for(i=0;i<partes.length;i++) {
-			String [] partes2= partes[i].split(",");
-			String sala=partes2[0];
-			String horario=partes2[1];
-			if(horario.equals("M")) {
-				System.out.println("Funcion ["+(i+1)+"] en la sala numero "+sala+" en el horario de la Mañana");
-			}else if(horario.equals("T")){
-				System.out.println("Funcion ["+(i+1)+"] en la sala numero "+sala+" en el horario de la Tarde ");
-			}
+	/**
+	 * Prints every avalaible schedule for a movie.
+	 * @param indicePeli The index of the movie.
+	 * @param horarios The schedules for the movies.
+	 * @return A String array with the avalaible schedules fot the specified movie.
+	 */
+	private static String [] desplegarHorarios(int indicePeli, String[] horarios) {
+		String[] partes = horarios[indicePeli].split(",");
+		String[] funciones = new String[partes.length / 2];
+		int j = 0;
+		for (int i = 0; i < partes.length; i += 2) {
+			String funcion = partes[i] + partes[i + 1];
+			System.out.println(funcion);
+			funciones[j] = funcion;
+			j++;
 		}
-		return partes;
-		
+		return funciones;
 	}
 
 	private static void devolucionEntradas() {
