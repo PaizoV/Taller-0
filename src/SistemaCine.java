@@ -307,13 +307,28 @@ public class SistemaCine {
 								break;
 							}
 						}
+						int k = obtenerKMatriz(funcion);	// We obtain the k value of the cubic matrix according to the selected function
 						desplegarAsientos(asientos, funcion);
 						System.out.print("Ingrese el numero de entradas: ");
 						int cantAsientos = Integer.parseInt(scan.nextLine());
-						for(int i = 0; i < cantAsientos; i++) {
+						for(int v = 0; v < cantAsientos; v++) {
 							while (true) {
 								System.out.print("Seleccione un asiento para comprar: ");
 								String asiento = scan.nextLine();
+								int i = obtenerIAsiento(asiento);
+								int j = Integer.parseInt(asiento.split("")[1]) - 1;
+								if (asientos[i][j][k].equals("disponible")) {
+									if (asientos[i][j - 1][k].equals("disponible") && asientos[i][j + 1][k].equals("disponible")) {
+										asientos[i][j][k] = rutInput;
+										break;
+									}
+									else {
+										System.out.println("No cumple distanciamiento social. Elija otro asiento");
+									}
+								}
+								else {
+									System.out.println("Asiento ocupado. Elija otro asiento");
+								}
 							}
 						}
 						calcularTotalCompra(asientos);
@@ -380,6 +395,42 @@ public class SistemaCine {
 				}
 			}
 		}
+	}
+	
+	private static int obtenerIAsiento(String asiento) {
+		String letra = asiento.split("")[0].toUpperCase();
+		int i = 0;
+		switch (letra) {
+		case "A":
+			break;
+		case "B":
+			i = 1;
+			break;
+		case "C":
+			i = 2;
+			break;
+		case "D":
+			i = 3;
+			break;
+		case "E":
+			i = 4;
+			break;
+		case "F":
+			i = 5;
+			break;
+		case "G":
+			i = 6;
+			break;
+		case "H":
+			i = 7;
+			break;
+		case "I":
+			i = 8;
+			break;
+		case "J":
+			i = 9;
+		}
+		return i;
 	}
 	
 	private static void informacionCliente(Scanner scan, String[] nombres, String[] apellidos, double[] saldos,
@@ -470,11 +521,10 @@ public class SistemaCine {
 	}
 	
 	private static int obtenerKMatriz(String funcion) {
-		int k = -1;
+		int k = 0;
 		switch (funcion) {
 		case "1m":
 		case "1M":
-			k = 0;
 			break;
 		case "1t":
 		case "1T":
@@ -495,16 +545,14 @@ public class SistemaCine {
 		case "3t":
 		case "3T":
 			k = 5;
-			break;
 		}
 		return k;
 	}
 	
 	private static String obtenerLetra(int i) {
-		String letra = "";
+		String letra = "A";
 		switch (i) {
 		case 0:
-			letra = "A";
 			break;
 		case 1:
 			letra = "B";
@@ -532,7 +580,6 @@ public class SistemaCine {
 			break;
 		case 9:
 			letra = "J";
-			break;
 		}
 		return letra;
 	}
