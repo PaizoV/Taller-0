@@ -43,7 +43,7 @@ public class SistemaCine {
 	/**
 	 * Reads the text file "peliculas" and stores its data into the corresponding lists.
 	 * @param nombresDePeliculas The names of the movies.
-	 * @param tiposDePeliculas If the movie is a premiere or not.
+	 * @param tiposDePeliculas If the movies are a premiere or not.
 	 * @param recaudaciones The amount of money the movie has generated.
 	 * @param horarios The avalaible times for a movie.
 	 * @return The amount of movies the text file has.
@@ -67,7 +67,7 @@ public class SistemaCine {
 	/**
 	 * Reads the text file "status" and checks if a user is enabled or not.
 	 * @param ruts The RUT of the users.
-	 * @param estados The status of a user.
+	 * @param estados The statuses of the users.
 	 * @throws IOException
 	 */
 	private static void leerArchivoStatus(String[] ruts, String[] estados) throws IOException {
@@ -144,7 +144,7 @@ public class SistemaCine {
 			String rutInput = scan.nextLine();
 			rutInput = cambiarFormato(rutInput);
 			//valida si el usuario esta registrado
-			boolean validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
+			boolean validarUsuario=buscarRut(rutInput,ruts);
 			
 			while(validarUsuario==false) {
 					desplegarMenuErrorDeIngreso();	
@@ -158,7 +158,7 @@ public class SistemaCine {
 						System.out.print("\nRUT:");
 						rutInput = scan.nextLine();
 						rutInput = cambiarFormato(rutInput);
-						validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
+						validarUsuario=buscarRut(rutInput,ruts);
 					}
 					else {
 					//REGISTRAR NUEVO USUARIO
@@ -182,7 +182,7 @@ public class SistemaCine {
 							System.out.print("\nRUT:");
 							rutInput = scan.nextLine();
 							rutInput = cambiarFormato(rutInput);
-							validarUsuario=buscarRut(rutInput,ruts,cantidadUsuarios);
+							validarUsuario=buscarRut(rutInput,ruts);
 						} 
 						else {
 					//CERRAR SISTEMA
@@ -279,7 +279,7 @@ public class SistemaCine {
 				else {
 					desplegarMenuCliente();
 					System.out.println("\nOPCION: ");
-					int op=Integer.parseInt(scan.nextLine());
+					int op = Integer.parseInt(scan.nextLine());
 					switch (op) {
 					case 1: {
 						//COMPRAR ENTRADA
@@ -331,11 +331,11 @@ public class SistemaCine {
 								}
 							}
 						}
-						calcularTotalCompra(asientos);
+						calcularTotalCompra(cantAsientos, rutInput, ruts, estados, indicePeli, tiposDePeliculas);
 						//CONFIRMACION 
-						System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1]NO[0]: ");
-						int opcion= Integer.parseInt(scan.nextLine());
-						if(opcion==1) {
+						System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1] NO[0]: ");
+						int opcion = Integer.parseInt(scan.nextLine());
+						if (opcion == 1) {
 							System.out.println("[1] RECARGAR ");
 							System.out.println("[2] CANCELAR");
 							System.out.println("Ingrese una opcion: ");
@@ -350,9 +350,9 @@ public class SistemaCine {
 								System.out.println("CANCELADO . . .");
 								continue;
 							}
+						}	
 						}
-						}else
-						if(opcion==0) {
+						else {
 							System.out.println("COMPRA NO REALIZADA . . .");
 						    continue;
 						}
@@ -515,9 +515,33 @@ public class SistemaCine {
 		
 	}
 
-	private static void calcularTotalCompra(String[][][] asientos) {
-		// TODO Auto-generated method stub
-		
+	/**
+	 * Calculates the amount of money the user has to pay.
+	 * @param cantEntradas The amount of tickets the user bought.
+	 * @param rut The RUT of the user who bought the tickets.
+	 * @param ruts The RUT of the users in the system.
+	 * @param estados The statuses of the users.
+	 * @param indicePeli The index of the selected movie.
+	 * @param tiposPeli If the movies are a premiere or not.
+	 * @return The total amount of money the user has to pay.
+	 */
+	private static double calcularTotalCompra(int cantEntradas, String rut, String[] ruts, 
+			String[] estados, int indicePeli, String[] tiposPeli) {
+		double total = 0;
+		int iRut = buscarIndice(rut, ruts);
+		String status = estados[iRut];
+		String tipoPeli = tiposPeli[indicePeli];
+		if (tipoPeli.equalsIgnoreCase("estreno")) {
+			total += 5500 * cantEntradas;
+		}
+		else {
+			total += 4000 * cantEntradas;
+		}
+		if (status.equalsIgnoreCase("habilitado")) {
+			total -= total * 0.15;
+			return total;
+		}
+		return total;
 	}
 	
 	private static int obtenerKMatriz(String funcion) {
@@ -740,13 +764,11 @@ public class SistemaCine {
 			System.out.println("[1] INTENTAR CLAVE NUEVAMENTE");
 			System.out.println("[2] CERRAR SISTEMA");
 	}
-	private static Boolean buscarRut(String rutInput, String[] ruts, int cantidadUsuarios) {
-		int index_rut = buscarIndice(rutInput, ruts);
-		//RUT ENCONTRADO
-		if ((index_rut != -1) || (rutInput.equals("ADMIN"))) {
+	private static boolean buscarRut(String rut, String[] ruts) {
+		int indiceRut = buscarIndice(rut, ruts);
+		if ((indiceRut != -1) || (rut.equals("ADMIN"))) {
 			return true;
-		} 
-		//RUT NO ENCONTRADO
+		}
 		else {
 			return false;
 		}
