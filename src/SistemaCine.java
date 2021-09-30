@@ -616,7 +616,7 @@ public class SistemaCine {
 	private static int buscarIndice(String valor, String[] lista) {
 		int i = 0;
 		while (i < lista.length && lista[i] != null) {
-			if (lista[i].equals(valor)) {
+			if (lista[i].equalsIgnoreCase(valor)) {
 				return i;
 			}
 		}
