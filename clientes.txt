@@ -1,4 +1,0 @@
-Agustin,Arqueros,22.222.222-6,1234,2000000
-Pablo,Cortes,33.333.333-9,1250,8000000
-Natalia,Araya,20.718.190-0,9999900
-Maria,Rivera,20.718.542-6,880000
