@@ -438,6 +438,10 @@ public class SistemaCine {
 					case "3":
 						//DEVOLUCION DE ENTRADA
 						String[] pelis = desplegarEntradas(indiceRut, entradasCompradas, cantidadPeliculas, nombresDePeliculas);
+						if (estaVacia(pelis)) {
+							System.out.println("No tiene entradas compradas\n");
+							break;
+						}
 						String peli;
 						while (true) {
 							System.out.println("INGRESE PELICULA: ");
@@ -498,6 +502,15 @@ public class SistemaCine {
 				}
 			}
 		}
+	}
+
+	private static boolean estaVacia(String[] arr) {
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] != null) {
+				return false;
+			}
+		}
+		return true;
 	}
 
 	private static void resetearAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
