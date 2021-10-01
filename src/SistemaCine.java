@@ -363,7 +363,8 @@ public class SistemaCine {
 								int i = obtenerIAsiento(asiento);
 								int j = Integer.parseInt(asiento.split("", 2)[1]) - 1;
 								if (asientos[i][j][k].equals("disponible")) {
-									if (asientos[i][j - 1][k].equals("disponible") && asientos[i][j + 1][k].equals("disponible")) {
+									if (asientos[i][j - 1][k].equals("disponible") || asientos[i][j - 1][k].equals("no disponible") 
+											&& asientos[i][j + 1][k].equals("disponible") || asientos[i][j + 1][k].equals("no disponible")) {
 										asientos[i][j][k] = rutInput;
 										break;
 									}
@@ -386,7 +387,7 @@ public class SistemaCine {
 								//Compra realizada
 								if(saldos[indiceRut] >= total) {
 									saldos[indiceRut]-= total;
-									System.out.println(saldos[indiceRut]);
+									// System.out.println(saldos[indiceRut]);
 									recaudaciones[indicePeli]+= total;
 									if(k % 2 != 0) {
 										recaudacionesManana[indicePeli]+=total;
@@ -780,10 +781,10 @@ public class SistemaCine {
 			for (int j = 0; j < 30; j++) {
 				if (!asientos[i][j][k].equals("no disponible")) {
 					if (asientos[i][j][k].equals("disponible")) {
-						System.out.print(letra + (j + 1) + " (D) ");
+						System.out.print(letra + (j + 1) + " (disp) ");
 					}
 					else {
-						System.out.print(letra + (j + 1) + " (O) ");
+						System.out.print(letra + (j + 1) + " (ocup) ");
 					}
 				}
 			}
