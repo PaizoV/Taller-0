@@ -387,20 +387,22 @@ public class SistemaCine {
 							String opcion = scan.nextLine();
 							if (opcion.equals("1")) {
 								//Compra realizada
-								if(saldos[indiceRut] >= total) {
+								if (saldos[indiceRut] >= total) {
 									saldos[indiceRut] -= total;
 									agregarEntradasUsuario(entradasCompradas, indiceRut, indicePeli, funcion, asientosSeleccionados);
 									
 									recaudaciones[indicePeli]+= total;
-									if(k % 2 != 0) {
+									if (k % 2 != 0) {
 										recaudacionesManana[indicePeli]+=total;
-									}else 
-									if(k % 2 == 0) {
+									}
+									else 
+									if (k % 2 == 0) {
 										recaudacionesTarde[indicePeli]+=total;
 									}
 									System.out.println("COMPRA EXITOSA ");
 									break;
-								}else {
+								}
+								else {
 									System.out.println("SALDO INVALIDO");
 									break;
 								}
@@ -454,28 +456,20 @@ public class SistemaCine {
 							}
 						}
 						int indicePelicula = buscarIndice(peli, nombresDePeliculas);
-						// CALCULAR TOTAL
+						funcion = entradasCompradas[indiceRut][indicePelicula].split("/")[0];
+						funcion = funcion.split(",")[0] + funcion.split(",")[1].toUpperCase();
+						
 						System.out.print("Cantidad de entradas que va a devolver: ");
 						int cantEntradas = Integer.parseInt(scan.nextLine());
 						String[] entradasDevueltas = new String[cantEntradas];
-						if (cantEntradas == entradasCompradas[indiceRut][indicePelicula].split("/")[1].length()) {
-							String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[0].split(",")[1];
-							double reembolso = 0;
-							if (tiposDePeliculas[indicePelicula].equalsIgnoreCase("estreno")) {
-								reembolso = 5500 * cantEntradas * 0.8;
-							}
-							else {
-								reembolso = 4000 * cantEntradas * 0.8;
-							}
-							if (horario.equalsIgnoreCase("m")) {
-								recaudacionesManana[indicePelicula] -= reembolso;
-							}
-							else {
-								recaudacionesTarde[indicePelicula] -= reembolso;
-							}
-							recaudaciones[indicePelicula] -= reembolso;
-							saldos[indiceRut] += reembolso;
-							System.out.println("Reembolso exitoso!");
+						
+						if (cantEntradas == 0) {
+							System.out.println("Cancelando...");
+							break;
+						}
+						else if (cantEntradas == entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",").length) {
+							entradasDevueltas = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",");
+							entradasCompradas[indiceRut][indicePelicula] = null;	// All tickets were refunded
 						}
 						else {
 							System.out.println("Elija los asientos que va a devolver:");
@@ -493,15 +487,29 @@ public class SistemaCine {
 									}
 								}
 							}
-							
+							eliminarEntradasUsuario(entradasCompradas, indiceRut, indicePelicula, funcion, entradasDevueltas);
 						}
-						// DEVOLUCION
-						funcion = entradasCompradas[indiceRut][indicePelicula].split("/")[0];
-						funcion = funcion.split(",")[0] + funcion.split(",")[1].toUpperCase();
+						String horario = funcion.split("")[1];
+						double reembolso = 0;
+						if (tiposDePeliculas[indicePelicula].equalsIgnoreCase("estreno")) {
+							reembolso = 5500 * cantEntradas * 0.8;
+						}
+						else {
+							reembolso = 4000 * cantEntradas * 0.8;
+						}
+						if (horario.equalsIgnoreCase("m")) {
+							recaudacionesManana[indicePelicula] -= reembolso;
+						}
+						else {
+							recaudacionesTarde[indicePelicula] -= reembolso;
+						}
+						recaudaciones[indicePelicula] -= reembolso;
+						saldos[indiceRut] += reembolso;
+					
 						k = obtenerKMatriz(funcion);
-						
 						resetearAsientos(asientos, entradasDevueltas, k);
-						entradasCompradas[indiceRut][indicePelicula] = null;
+						
+						System.out.println("Reembolso exitoso!");
 						break;
 					case "4":
 						//CARTELERA
@@ -552,6 +560,26 @@ public class SistemaCine {
 			int j = Integer.parseInt(asientosSeleccionados[v].split("", 2)[1]) - 1;
 			asientos[i][j][k] = "disponible";
 		}
+	}
+	
+	private static void eliminarEntradasUsuario(String[][] entradasCompradas, int indiceRut, int indicePelicula,
+			String funcion, String[] entradasDevueltas) {
+		String[] entradasOriginales = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",");
+		String[] nuevasEntradas = new String[entradasOriginales.length - entradasDevueltas.length];
+		int i = 0;
+		for (int j = 0; j < entradasOriginales.length; j++) {
+			if (buscarIndice(entradasOriginales[j], entradasDevueltas) == -1) {
+				nuevasEntradas[i] = entradasOriginales[j];
+				i++;
+			}
+		}
+		String infoEntradas = funcion.split("", 2)[0] + "," + funcion.split("", 2)[1].toUpperCase() + "/";
+		i = 0;
+		for (i = 0; i < nuevasEntradas.length - 1; i++) {
+			infoEntradas += nuevasEntradas[i] + ",";
+		}
+		infoEntradas += nuevasEntradas[i];
+		entradasCompradas[indiceRut][indicePelicula] = infoEntradas;
 	}
 
 	/**
