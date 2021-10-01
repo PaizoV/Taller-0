@@ -457,6 +457,7 @@ public class SistemaCine {
 						// CALCULAR TOTAL
 						System.out.print("Cantidad de entradas que va a devolver: ");
 						int cantEntradas = Integer.parseInt(scan.nextLine());
+						String[] entradasDevueltas = new String[cantEntradas];
 						if (cantEntradas == entradasCompradas[indiceRut][indicePelicula].split("/")[1].length()) {
 							String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[0].split(",")[1];
 							double reembolso = 0;
@@ -474,8 +475,32 @@ public class SistemaCine {
 							}
 							recaudaciones[indicePelicula] -= reembolso;
 							saldos[indiceRut] += reembolso;
+							System.out.println("Reembolso exitoso!");
+						}
+						else {
+							System.out.println("Elija los asientos que va a devolver:");
+							for (int i = 0; i < cantEntradas; i++) {
+								while (true) {
+									System.out.print("Asiento: ");
+									String asiento = scan.nextLine().toUpperCase();
+									if (buscarIndice(asiento, 
+											entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",")) != -1) {
+										entradasDevueltas[i] = asiento;
+										break;
+									}
+									else {
+										System.out.println("Asiento invalido. Intente nuevamente");
+									}
+								}
+							}
+							
 						}
 						// DEVOLUCION
+						funcion = entradasCompradas[indiceRut][indicePelicula].split("/")[0];
+						funcion = funcion.split(",")[0] + funcion.split(",")[1].toUpperCase();
+						k = obtenerKMatriz(funcion);
+						
+						resetearAsientos(asientos, entradasDevueltas, k);
 						entradasCompradas[indiceRut][indicePelicula] = null;
 						break;
 					case "4":
@@ -515,6 +540,12 @@ public class SistemaCine {
 		return true;
 	}
 
+	/**
+	 * 
+	 * @param asientos
+	 * @param asientosSeleccionados
+	 * @param k
+	 */
 	private static void resetearAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
 		for (int v = 0; v < asientosSeleccionados.length; v++) {
 			int i = obtenerIAsiento(asientosSeleccionados[v]);
