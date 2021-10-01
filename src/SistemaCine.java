@@ -376,11 +376,24 @@ public class SistemaCine {
 								}
 							}
 						}
-						calcularTotalCompra(cantAsientos, rutInput, ruts, estados, indicePeli, tiposDePeliculas);
+						double total=calcularTotalCompra(cantAsientos, rutInput, ruts, estados, indicePeli, tiposDePeliculas);
 						//CONFIRMACION 
 						System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1] NO[0]: ");
 						int opcion = Integer.parseInt(scan.nextLine());
+						
 						if (opcion == 1) {
+							//Compra realizada
+							saldos[indiceRut]=- total;
+							recaudaciones[indicePeli]=+ total;
+							if(k % 2 != 0) {
+								recaudacionesManana[indicePeli]=+total;
+							}else 
+							if(k % 2 == 0) {
+								recaudacionesTarde[indicePeli]=+total;
+							}
+						
+						}else if(opcion == 0) {
+							//Compra no realizada
 							System.out.println("[1] RECARGAR ");
 							System.out.println("[2] CANCELAR");
 							System.out.println("Ingrese una opcion: ");
