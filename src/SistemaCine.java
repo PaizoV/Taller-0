@@ -356,6 +356,7 @@ public class SistemaCine {
 						desplegarAsientos(asientos, funcion);
 						System.out.print("Ingrese el numero de entradas: ");
 						int cantAsientos = Integer.parseInt(scan.nextLine());
+						String[] asientosSeleccionados = new String[cantAsientos];
 						for(int v = 0; v < cantAsientos; v++) {
 							while (true) {
 								System.out.print("Seleccione un asiento para comprar: ");
@@ -365,7 +366,7 @@ public class SistemaCine {
 								if (asientos[i][j][k].equals("disponible")) {
 									if (asientos[i][j - 1][k].equals("disponible") || asientos[i][j - 1][k].equals("no disponible") 
 											&& asientos[i][j + 1][k].equals("disponible") || asientos[i][j + 1][k].equals("no disponible")) {
-										asientos[i][j][k] = rutInput;
+										asientosSeleccionados[v] = asiento.toUpperCase();
 										break;
 									}
 									else {
@@ -386,8 +387,10 @@ public class SistemaCine {
 							if (opcion.equals("1")) {
 								//Compra realizada
 								if(saldos[indiceRut] >= total) {
-									saldos[indiceRut]-= total;
-									// System.out.println(saldos[indiceRut]);
+									saldos[indiceRut] -= total;
+									agregarEntradasUsuario(entradasCompradas, indiceRut, indicePeli, funcion, asientosSeleccionados);
+									agregarOcupacionAsientos(asientos, asientosSeleccionados, k);
+									
 									recaudaciones[indicePeli]+= total;
 									if(k % 2 != 0) {
 										recaudacionesManana[indicePeli]+=total;
@@ -496,6 +499,38 @@ public class SistemaCine {
 		}
 	}
 	
+	private static void agregarOcupacionAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
+		for (int v = 0; v < asientosSeleccionados.length; v++) {
+			int i = obtenerIAsiento(asientosSeleccionados[v]);
+			int j = Integer.parseInt(asientosSeleccionados[v].split("", 2)[1]) - 1;
+			asientos[i][j][k] = "ocupado";
+		}
+	}
+
+	/**
+	 * 
+	 * @param infoEntradas 
+	 * @param entradasCompradas
+	 * @param indiceRut
+	 * @param indicePeli
+	 * @param funcion
+	 * @param asientosSeleccionados
+	 */
+	private static void agregarEntradasUsuario(String[][] entradasCompradas, int indiceRut, int indicePeli, String funcion, 
+			String[] asientosSeleccionados) {
+		if (entradasCompradas[indiceRut][indicePeli] == null) {
+			 entradasCompradas[indiceRut][indicePeli] = funcion.split("", 2)[0] + "," + funcion.split("", 2)[1].toUpperCase() + "/";
+		}
+		else {
+			entradasCompradas[indiceRut][indicePeli] += ",";
+		}
+		int i;
+		for (i = 0; i < asientosSeleccionados.length - 1; i++) {
+			 entradasCompradas[indiceRut][indicePeli] += asientosSeleccionados[i] + ",";
+		}
+		entradasCompradas[indiceRut][indicePeli] += asientosSeleccionados[i];
+	}
+
 	/**
 	 * 
 	 * @param asiento
@@ -578,19 +613,19 @@ public class SistemaCine {
 		for (int j = 0; j < cantidadPeliculas; j++) {
 			if (entradasCompradas[indiceRut][j] != null) {
 				String[] partes = entradasCompradas[indiceRut][j].split("/");
-				String[] asientos = partes[0].split(",");
-				String[] horario = partes[1].split(",");
+				String[] horario = partes[0].split(",");
+				String[] asientos = partes[1].split(",");
 				peliculas[iPeli] = nombresDePeliculas[j];
 				iPeli++;
-				System.out.println("PELICULA: " + nombresDePeliculas[j]);
-				System.out.println("HORARIO: " + horario[0] + horario[1]);
-				System.out.println("ASIENTOS:\n");
+				System.out.println("\nPelicula: " + nombresDePeliculas[j]);
+				System.out.println("Horario: " + horario[0] + horario[1]);
+				System.out.println("Asientos:");
 				for (int i = 0; i < asientos.length; i++) {
 					System.out.println(asientos[i]);
 				}
 			}
-			System.out.println();
 		}
+		System.out.println();
 		return peliculas;
 	}
 
@@ -605,11 +640,11 @@ public class SistemaCine {
 	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
 			double[] recaudacionesTarde, int cantidadPeliculas) {
 		for(int i=0; i<cantidadPeliculas;i++) {
-			System.out.println("LA PELICULA "+nombresDePeliculas[i].toUpperCase());
-			System.out.println("MONTO RECAUDADO TOTAL: "+recaudaciones[i]);
-			System.out.println("MONTO RECAUDADO A LO LARGO DEL DIA: "+(recaudacionesManana[i]+recaudacionesTarde[i]));
-			System.out.println("MONTO RECAUDADO EN LA MAÑANA "+recaudacionesManana[i]);
-			System.out.println("MONTO RECAUDADO EN LA TARDE "+recaudacionesTarde[i]);
+			System.out.println("Pelicula: "+nombresDePeliculas[i].toUpperCase());
+			System.out.println("Monto recaudado total: "+recaudaciones[i]);
+			System.out.println("Monto recaudado a lo largo del dia: "+(recaudacionesManana[i]+recaudacionesTarde[i]));
+			System.out.println("Monto recaudado en la mañana: "+recaudacionesManana[i]);
+			System.out.println("Monto recaudado en la tarde: "+recaudacionesTarde[i]);
 			
 		}
 	}
@@ -915,7 +950,7 @@ public class SistemaCine {
 		nombres[cantUsuarios] = nombreInput;
 		apellidos[cantUsuarios] = apellidoInput;
 		contrasenias[cantUsuarios] = claveInput;
-		System.out.println("\nREGISTRO EXITOSO!");
+		System.out.println("\nRegistro exitoso!");
 	}
 
 	/**
