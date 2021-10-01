@@ -455,24 +455,26 @@ public class SistemaCine {
 						}
 						int indicePelicula = buscarIndice(peli, nombresDePeliculas);
 						// CALCULAR TOTAL
-						int cantEntradas = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",").length;
-						String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",")[1]; 
-						double reembolso = 0;
-						if (tiposDePeliculas[indicePelicula].equals("estreno")) {
-							reembolso = 5500 * cantEntradas * 0.8;
+						System.out.print("Cantidad de entradas que va a devolver: ");
+						int cantEntradas = Integer.parseInt(scan.nextLine());
+						if (cantEntradas == entradasCompradas[indiceRut][indicePelicula].split("/")[1].length()) {
+							String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[0].split(",")[1];
+							double reembolso = 0;
+							if (tiposDePeliculas[indicePelicula].equalsIgnoreCase("estreno")) {
+								reembolso = 5500 * cantEntradas * 0.8;
+							}
+							else {
+								reembolso = 4000 * cantEntradas * 0.8;
+							}
+							if (horario.equalsIgnoreCase("m")) {
+								recaudacionesManana[indicePelicula] -= reembolso;
+							}
+							else {
+								recaudacionesTarde[indicePelicula] -= reembolso;
+							}
+							recaudaciones[indicePelicula] -= reembolso;
+							saldos[indiceRut] += reembolso;
 						}
-						else {
-							reembolso = 4000 * cantEntradas * 0.8;
-						}
-						if (horario.equalsIgnoreCase("m")) {
-							recaudacionesManana[indicePelicula] -= reembolso; 
-						}
-						else {
-							recaudacionesTarde[indicePelicula] -= reembolso;
-						}
-						recaudaciones[indicePelicula] -= reembolso;
-						saldos[indiceRut] += reembolso;
-						
 						// DEVOLUCION
 						entradasCompradas[indiceRut][indicePelicula] = null;
 						break;
