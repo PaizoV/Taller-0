@@ -144,6 +144,27 @@ public class SistemaCine {
 		System.out.println();
 	}
 
+	/**
+	 * 
+	 * @param scan
+	 * @param nombres
+	 * @param apellidos
+	 * @param ruts
+	 * @param contrasenias
+	 * @param saldos
+	 * @param estados
+	 * @param nombresDePeliculas
+	 * @param tiposDePeliculas
+	 * @param recaudaciones
+	 * @param recaudacionesManana
+	 * @param recaudacionesTarde
+	 * @param horarios
+	 * @param entradasCompradas
+	 * @param asientos
+	 * @param cantidadUsuarios
+	 * @param cantidadPeliculas
+	 * @throws IOException
+	 */
 	private static void iniciarSesion(Scanner scan, String[] nombres, String[] apellidos, String[] ruts,
 			String[] contrasenias, double[] saldos, String[] estados, String[] nombresDePeliculas,
 			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
@@ -363,17 +384,17 @@ public class SistemaCine {
 							System.out.println("[1] RECARGAR ");
 							System.out.println("[2] CANCELAR");
 							System.out.println("Ingrese una opcion: ");
-							int op2=scan.nextInt();
+							String op2 = scan.nextLine();
 							switch (op2) {
-							case 1: {
+							case "1":
 								//RECARGAR SALDO 
-
-							}
-							case 2:{
+								System.out.print("CANTIDAD: $");
+								double monto = Double.parseDouble(scan.nextLine());
+								saldos[indiceRut] += monto;
+								break;
+							case "2":
 								//CANCELAR
 								System.out.println("CANCELADO . . .");
-								continue;
-							}
 							}	
 						}
 						else {
@@ -389,7 +410,40 @@ public class SistemaCine {
 						break;					
 					case "3":
 						//DEVOLUCION DE ENTRADA
-						devolucionEntradas();
+						String[] pelis = desplegarEntradas(indiceRut, entradasCompradas, cantidadPeliculas, nombresDePeliculas);
+						int indicePelicula = 0; 
+						while (true) {
+							System.out.println("INGRESE PELICULA: ");
+							String peli = scan.nextLine();
+							indicePelicula = buscarIndice(peli, pelis);
+							if (indicePelicula != -1) {
+								break;
+							}
+							else {
+								System.out.println("\nNOMBRE INVALIDO\n");
+							}
+						}
+						// CALCULAR TOTAL
+						int cantEntradas = entradasCompradas[indiceRut][indicePelicula].split("/")[0].split(",").length;
+						String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",")[1]; 
+						double reembolso = 0;
+						if (tiposDePeliculas[indicePelicula].equals("estreno")) {
+							reembolso = 5500 * cantEntradas * 0.8;
+						}
+						else {
+							reembolso = 4000 * cantEntradas * 0.8;
+						}
+						if (horario.equalsIgnoreCase("m")) {
+							recaudacionesManana[indicePelicula] -= reembolso; 
+						}
+						else {
+							recaudacionesTarde[indicePelicula] -= reembolso;
+						}
+						recaudaciones[indicePelicula] -= reembolso;
+						saldos[indiceRut] += reembolso;
+						
+						// DEVOLUCION
+						entradasCompradas[indiceRut][indicePelicula] = null;
 						break;
 					case "5":
 						//CARTELERA
@@ -419,6 +473,11 @@ public class SistemaCine {
 		}
 	}
 	
+	/**
+	 * 
+	 * @param asiento
+	 * @return
+	 */
 	private static int obtenerIAsiento(String asiento) {
 		String letra = asiento.split("")[0].toUpperCase();
 		int i = 0;
@@ -455,6 +514,18 @@ public class SistemaCine {
 		return i;
 	}
 	
+	/**
+	 * 
+	 * @param scan
+	 * @param nombres
+	 * @param apellidos
+	 * @param saldos
+	 * @param entradasCompradas
+	 * @param nombresDePeliculas
+	 * @param horarios
+	 * @param cantidadUsuarios
+	 * @param cantidadPeliculas
+	 */
 	private static void informacionCliente(Scanner scan, String[] nombres, String[] apellidos, double[] saldos,
 			String[][] entradasCompradas, String[] nombresDePeliculas, String[] horarios, int cantidadUsuarios, int cantidadPeliculas) {
 		System.out.print("INGRESE EL RUT DEL CLIENTE: ");
@@ -470,23 +541,44 @@ public class SistemaCine {
 		}
 	}
 
-	private static void desplegarEntradas(int indexRut, String[][] entradasCompradas, int cantidadPeliculas, String[] nombresDePeliculas) {
-		
-		for(int i=0;i<cantidadPeliculas;i++) {
-			if(entradasCompradas[indexRut][i]!=null){
-				System.out.println("ENTRADAS COMPRADAS PARA LA PELICULA "+nombresDePeliculas[i]);
-				String [] infoInventario=entradasCompradas[indexRut][i].split("/");
-				String [] horarios=infoInventario[0].split(",");
-				String [] asientos=infoInventario[1].split(",");
-				for(int j=0;j<horarios.length;j++) {
-					System.out.println("Asiento "+asientos[j]+" horario "+horarios[j]);
+	/**
+	 * 
+	 * @param indiceRut
+	 * @param entradasCompradas
+	 * @param cantidadPeliculas
+	 * @param nombresDePeliculas
+	 */
+	private static String[] desplegarEntradas(int indiceRut, String[][] entradasCompradas, int cantidadPeliculas, 
+			String[] nombresDePeliculas) {
+		String[] peliculas = new String[cantidadPeliculas];
+		int iPeli = 0;
+		for (int j = 0; j < cantidadPeliculas; j++) {
+			if (entradasCompradas[indiceRut][j] != null) {
+				String[] partes = entradasCompradas[indiceRut][j].split("/");
+				String[] asientos = partes[0].split(",");
+				String[] horario = partes[1].split(",");
+				peliculas[iPeli] = nombresDePeliculas[j];
+				iPeli++;
+				System.out.println("PELICULA: " + nombresDePeliculas[j]);
+				System.out.println("HORARIO: " + horario[0] + horario[1]);
+				System.out.println("ASIENTOS:\n");
+				for (int i = 0; i < asientos.length; i++) {
+					System.out.println(asientos[i]);
 				}
 			}
-			
+			System.out.println();
 		}
-		
+		return peliculas;
 	}
 
+	/**
+	 * 
+	 * @param nombresDePeliculas
+	 * @param recaudaciones
+	 * @param recaudacionesManana
+	 * @param recaudacionesTarde
+	 * @param cantidadPeliculas
+	 */
 	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
 			double[] recaudacionesTarde, int cantidadPeliculas) {
 		for(int i=0; i<cantidadPeliculas;i++) {
@@ -522,9 +614,19 @@ public class SistemaCine {
 			}
 		}
 	}
-		
 	
-	
+	/**
+	 * 
+	 * @param rutInput
+	 * @param ruts
+	 * @param nombres
+	 * @param apellidos
+	 * @param saldos
+	 * @param nombresDePeliculas
+	 * @param entradasCompradas
+	 * @param cantidadUsuarios
+	 * @param cantidadPeliculas
+	 */
 	private static void infomacionUsuario(String rutInput, String[] ruts, String[] nombres, String[] apellidos, double[] saldos,
 			String[] nombresDePeliculas, String[][] entradasCompradas, int cantidadUsuarios, int cantidadPeliculas) {
 		int index=buscarIndice(rutInput, ruts);
@@ -566,6 +668,11 @@ public class SistemaCine {
 		return total;
 	}
 	
+	/**
+	 * 
+	 * @param funcion
+	 * @return
+	 */
 	private static int obtenerKMatriz(String funcion) {
 		int k = 0;
 		switch (funcion) {
@@ -595,6 +702,11 @@ public class SistemaCine {
 		return k;
 	}
 	
+	/**
+	 * 
+	 * @param i
+	 * @return
+	 */
 	private static String obtenerLetra(int i) {
 		String letra = "A";
 		switch (i) {
@@ -630,6 +742,11 @@ public class SistemaCine {
 		return letra;
 	}
 
+	/**
+	 * 
+	 * @param asientos
+	 * @param funcion
+	 */
 	private static void desplegarAsientos(String[][][] asientos, String funcion) {
 		int k = obtenerKMatriz(funcion);
 		for (int i = 0; i < 10; i++) {
@@ -667,11 +784,9 @@ public class SistemaCine {
 		return funciones;
 	}
 
-	private static void devolucionEntradas() {
-		// TODO Auto-generated method stub
-		
-	}
-
+	/**
+	 * 
+	 */
 	private static void desplegarMenuCliente() {
 		System.out.println();
 		printlnRepeat("*", 30);
@@ -754,6 +869,18 @@ public class SistemaCine {
 		writerPeliculas.close();
 	}
 
+	/**
+	 * 
+	 * @param rutInput
+	 * @param ruts
+	 * @param nombreInput
+	 * @param nombres
+	 * @param apellidoInput
+	 * @param apellidos
+	 * @param claveInput
+	 * @param contrasenias
+	 * @param cantUsuarios
+	 */
 	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, 
 			String[] nombres, String apellidoInput, String[] apellidos, String claveInput, 
 			String[] contrasenias, int cantUsuarios) {
