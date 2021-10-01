@@ -378,43 +378,52 @@ public class SistemaCine {
 						}
 						double total=calcularTotalCompra(cantAsientos, rutInput, ruts, estados, indicePeli, tiposDePeliculas);
 						//CONFIRMACION 
-						System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1] NO[0]: ");
-						int opcion = Integer.parseInt(scan.nextLine());
 						
-						if (opcion == 1) {
-							//Compra realizada
-							saldos[indiceRut]=- total;
-							recaudaciones[indicePeli]=+ total;
-							if(k % 2 != 0) {
-								recaudacionesManana[indicePeli]=+total;
-							}else 
-							if(k % 2 == 0) {
-								recaudacionesTarde[indicePeli]=+total;
+						
+							System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1] NO[0]: ");
+							String opcion = scan.nextLine();
+							if (opcion.equals("1")) {
+								//Compra realizada
+								if(saldos[indiceRut] >= total) {
+									saldos[indiceRut]-= total;
+									System.out.println(saldos[indiceRut]);
+									recaudaciones[indicePeli]+= total;
+									if(k % 2 != 0) {
+										recaudacionesManana[indicePeli]+=total;
+									}else 
+									if(k % 2 == 0) {
+										recaudacionesTarde[indicePeli]+=total;
+									}
+									System.out.println("COMPRA EXITOSA ");
+									break;
+								}else {
+									System.out.println("SALDO INVALIDO");
+									break;
+								}
+								
+							}else if(opcion.equals("0")) {
+								//Compra no realizada
+								System.out.println("[1] RECARGAR ");
+								System.out.println("[2] CANCELAR");
+								System.out.println("Ingrese una opcion: ");
+								String op2 = scan.nextLine();
+								switch (op2) {
+								case "1":
+									//RECARGAR SALDO 
+									System.out.print("CANTIDAD: $");
+									double monto = Double.parseDouble(scan.nextLine());
+									saldos[indiceRut] += monto;
+									break;
+								case "2":
+									//CANCELAR
+									System.out.println("CANCELADO . . .");
+									break;
+								}	
+							}else {
+								System.out.println("OPCION NO VALIDA");
+								continue;
 							}
-						
-						}else if(opcion == 0) {
-							//Compra no realizada
-							System.out.println("[1] RECARGAR ");
-							System.out.println("[2] CANCELAR");
-							System.out.println("Ingrese una opcion: ");
-							String op2 = scan.nextLine();
-							switch (op2) {
-							case "1":
-								//RECARGAR SALDO 
-								System.out.print("CANTIDAD: $");
-								double monto = Double.parseDouble(scan.nextLine());
-								saldos[indiceRut] += monto;
-								break;
-							case "2":
-								//CANCELAR
-								System.out.println("CANCELADO . . .");
-							}	
-						}
-						else {
-							System.out.println("COMPRA NO REALIZADA . . .");
-							continue;
-						}
-						break;
+							break;	
 					case "2":
 						//INFORMACION DE USUARIO
 						infomacionUsuario(rutInput,ruts,nombres,apellidos,
