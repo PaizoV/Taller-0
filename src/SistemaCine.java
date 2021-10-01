@@ -37,7 +37,6 @@ public class SistemaCine {
 		// Login
 		iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos, estados, nombresDePeliculas, tiposDePeliculas,
 				recaudaciones, recaudacionesManana, recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
-		
 	}
 	
 	/**
@@ -86,7 +85,7 @@ public class SistemaCine {
 	 * @param apellidos The last names of the users.
 	 * @param ruts The RUT of the users.
 	 * @param contrasenias The passwords of the users.
-	 * @param saldos The avalaible money a user has.
+	 * @param saldos The avalaible money of the users.
 	 * @return The amount of registered users in the system.
 	 * @throws IOException
 	 */
@@ -170,9 +169,9 @@ public class SistemaCine {
 			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
 			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
 		while (true) {
-			printlnRepeat("*", 50);
+			printlnRepeat("*", 30);
 			System.out.println("INICIAR SESION");
-			printlnRepeat("*", 50);
+			printlnRepeat("*", 30);
 			System.out.print("\nIngrese RUT: ");
 			String rutInput = cambiarFormato(scan.nextLine());
 			int indiceRut = buscarIndice(rutInput, ruts);	// Checks if the user is registered
@@ -226,7 +225,7 @@ public class SistemaCine {
 			}
 			
 			//VERIFICACION DE LA CONTRASEÑA
-			System.out.print("\nCONTRASEÑA:");
+			System.out.print("\nContraseña: ");
 			String claveInput = scan.nextLine();
 			boolean ingresoDeClave = verificacionDeClave(rutInput, ruts, claveInput, contrasenias);
 			
@@ -445,17 +444,17 @@ public class SistemaCine {
 						// DEVOLUCION
 						entradasCompradas[indiceRut][indicePelicula] = null;
 						break;
-					case "5":
+					case "4":
 						//CARTELERA
 						cartelera(nombresDePeliculas,horarios,cantidadPeliculas);
 						break;
-					case "6":
+					case "5":
 						//INICIAR OTRA SESION
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos,
 								estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, recaudacionesManana, 
 								recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
 						break;
-					case "7":
+					case "6":
 						//CERRAR SISTEMA
 						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
 						break;
@@ -597,22 +596,26 @@ public class SistemaCine {
 	 * @param cantidadPeliculas
 	 */
 	private static void cartelera(String[] nombresDePeliculas, String[] horarios, int cantidadPeliculas) {
-		System.out.println("**********************************************************");
+		printlnRepeat("*", 30);
 		System.out.println("PELICULAS EN CARTELERA");
-		System.out.println("**********************************************************");
-		//Arreglar
-		for(int i=0;i<cantidadPeliculas;i++) {
-			String [] partes=horarios[i].split(",");
-			System.out.println(nombresDePeliculas[i].toUpperCase()+" NUMERO DE FUNCIONES "+(partes.length/2));
-			for(int j=0;j<(partes.length/2);j++) {
-				if(partes[(i*2)+1].equals("M")) {
-					System.out.println("FUNCION ["+(i+1)+"] EN LA SALA "+ partes[i*2]+" HORARIO MAÑANA");
-				}else
-				if(partes[(i*2)+1].equals("T")) {
-						System.out.println("FUNCION ["+(i+1)+"] EN LA SALA "+ partes[i*2]+" HORARIO TARDE");
+		printlnRepeat("*", 30);
+		for (int i = 0; i < cantidadPeliculas; i++) {
+			String[] partes = horarios[i].split(",");
+			System.out.println("\n" + nombresDePeliculas[i] + ". Numero de funciones: " + (partes.length / 2));
+			int numFuncion = 1;
+			for (int j = 0; j < partes.length; j += 2) {
+				String sala = partes[j];
+				String hora = partes[j + 1];
+				if (hora.equalsIgnoreCase("m")) {
+					System.out.println("Funcion [" + numFuncion + "] en la sala " + sala + ". Horario mañana");
 				}
+				else {
+					System.out.println("Funcion [" + numFuncion + "] en la sala " + sala + ". Horario tarde");
+				}
+				numFuncion++;
 			}
 		}
+		System.out.println();
 	}
 	
 	/**
@@ -630,11 +633,11 @@ public class SistemaCine {
 	private static void infomacionUsuario(String rutInput, String[] ruts, String[] nombres, String[] apellidos, double[] saldos,
 			String[] nombresDePeliculas, String[][] entradasCompradas, int cantidadUsuarios, int cantidadPeliculas) {
 		int index=buscarIndice(rutInput, ruts);
-		System.out.println("***** INFORMACION DEL USUARIO *****");
-		System.out.println("CLIENTE "+ruts[index]);
-		System.out.println("NOMBRE "+nombres[index].toUpperCase()+" "+apellidos[index].toUpperCase());
-		System.out.println("SALDO"+saldos[index]);
-		System.out.println("ENTRADAS COMPRADAS: ");
+		System.out.println("***** INFORMACION DEL USUARIO *****\n");
+		System.out.println("Cliente: " + ruts[index]);
+		System.out.println("Nombre: "+nombres[index].toUpperCase() + " " + apellidos[index].toUpperCase());
+		System.out.println("Saldo: $" + saldos[index]);
+		System.out.println("Entradas compradas: ");
 		desplegarEntradas(index,entradasCompradas, cantidadPeliculas, nombresDePeliculas);
 		
 	}
@@ -752,7 +755,7 @@ public class SistemaCine {
 		for (int i = 0; i < 10; i++) {
 			String letra = obtenerLetra(i);
 			for (int j = 0; j < 30; j++) {
-				if (!asientos[i][j][k].equals("no disponible")) {
+				if (asientos[i][j][k] != null && !asientos[i][j][k].equals("no disponible")) {
 					if (asientos[i][j][k].equals("disponible")) {
 						System.out.print(letra + (j + 1) + " (D) ");
 					}
@@ -790,7 +793,7 @@ public class SistemaCine {
 	private static void desplegarMenuCliente() {
 		System.out.println();
 		printlnRepeat("*", 30);
-		System.out.println("\nMENU CLIENTE");
+		System.out.println("MENU CLIENTE");
 		printlnRepeat("*", 30);
 		System.out.println("\n[1] COMPRAR ENTRADA");
 		System.out.println("[2] INFORMACION DE USUARIO");
@@ -903,6 +906,7 @@ public class SistemaCine {
 			if (lista[i].equalsIgnoreCase(valor)) {
 				return i;
 			}
+			i++;
 		}
 		return -1;
 	}
