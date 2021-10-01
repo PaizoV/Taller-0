@@ -286,7 +286,7 @@ public class SistemaCine {
 					case "2": 
 						//INFORMACION DE CLIENTE
 						informacionCliente(scan, nombres, apellidos, saldos, entradasCompradas,
-								nombresDePeliculas, horarios, cantidadUsuarios, cantidadPeliculas);
+								nombresDePeliculas, horarios, cantidadUsuarios, cantidadPeliculas,ruts);
 						break;
 					case "3":
 						//INICIAR OTRA SESION
@@ -583,12 +583,15 @@ public class SistemaCine {
 	 * @param horarios
 	 * @param cantidadUsuarios
 	 * @param cantidadPeliculas
+	 * @param ruts 
 	 */
 	private static void informacionCliente(Scanner scan, String[] nombres, String[] apellidos, double[] saldos,
-			String[][] entradasCompradas, String[] nombresDePeliculas, String[] horarios, int cantidadUsuarios, int cantidadPeliculas) {
+			String[][] entradasCompradas, String[] nombresDePeliculas, String[] horarios, int cantidadUsuarios, 
+			int cantidadPeliculas, String[] ruts) {
 		System.out.print("INGRESE EL RUT DEL CLIENTE: ");
 		String rut=scan.nextLine();
-		int indexRut=buscarIndice(rut, horarios);
+		rut=cambiarFormato(rut);
+		int indexRut=buscarIndice(rut, ruts);
 		if(indexRut!=-1) {
 			System.out.println("EL CLIENTE "+nombres[indexRut].toUpperCase()+" "+apellidos[indexRut].toUpperCase());
 			System.out.println("CON SALDO: "+saldos[indexRut]);
