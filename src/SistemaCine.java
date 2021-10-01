@@ -28,6 +28,7 @@ public class SistemaCine {
 		// Inventory and seats' matrixes
 		String[][] entradasCompradas = new String[1000][1000];
 		String[][][] asientos = new String[10][30][6];
+		rellenarAsientos(asientos);
 		
 		// Text files reading
 		int cantidadUsuarios = leerArchivoClientes(nombres, apellidos, ruts, contrasenias, saldos);
@@ -201,9 +202,9 @@ public class SistemaCine {
 					printlnRepeat("*", 30);
 					System.out.println("REGISTRAR NUEVO USUARIO (RUT: " + rutInput + ")");
 					printlnRepeat("*", 30);
-					System.out.println("\nNOMBRE: ");
+					System.out.print("\nNOMBRE: ");
 					String nombreInput = scan.nextLine();
-					System.out.println("\nAPELLIDO: ");
+					System.out.print("\nAPELLIDO: ");
 					String apellidoInput = scan.nextLine();
 					System.out.print("\nCONTRASEÑA: ");
 					String claveInput = scan.nextLine();
@@ -360,7 +361,7 @@ public class SistemaCine {
 								System.out.print("Seleccione un asiento para comprar: ");
 								String asiento = scan.nextLine();
 								int i = obtenerIAsiento(asiento);
-								int j = Integer.parseInt(asiento.split("")[1]) - 1;
+								int j = Integer.parseInt(asiento.split("", 2)[1]) - 1;
 								if (asientos[i][j][k].equals("disponible")) {
 									if (asientos[i][j - 1][k].equals("disponible") && asientos[i][j + 1][k].equals("disponible")) {
 										asientos[i][j][k] = rutInput;
@@ -755,7 +756,7 @@ public class SistemaCine {
 		for (int i = 0; i < 10; i++) {
 			String letra = obtenerLetra(i);
 			for (int j = 0; j < 30; j++) {
-				if (asientos[i][j][k] != null && !asientos[i][j][k].equals("no disponible")) {
+				if (!asientos[i][j][k].equals("no disponible")) {
 					if (asientos[i][j][k].equals("disponible")) {
 						System.out.print(letra + (j + 1) + " (D) ");
 					}
