@@ -366,6 +366,7 @@ public class SistemaCine {
 								if (asientos[i][j][k].equals("disponible")) {
 									if (asientos[i][j - 1][k].equals("disponible") || asientos[i][j - 1][k].equals("no disponible") 
 											&& asientos[i][j + 1][k].equals("disponible") || asientos[i][j + 1][k].equals("no disponible")) {
+										asientos[i][j][k] = "ocupado";
 										asientosSeleccionados[v] = asiento.toUpperCase();
 										break;
 									}
@@ -389,7 +390,6 @@ public class SistemaCine {
 								if(saldos[indiceRut] >= total) {
 									saldos[indiceRut] -= total;
 									agregarEntradasUsuario(entradasCompradas, indiceRut, indicePeli, funcion, asientosSeleccionados);
-									agregarOcupacionAsientos(asientos, asientosSeleccionados, k);
 									
 									recaudaciones[indicePeli]+= total;
 									if(k % 2 != 0) {
@@ -406,6 +406,7 @@ public class SistemaCine {
 								}
 								
 							}else if(opcion.equals("0")) {
+								resetearAsientos(asientos, asientosSeleccionados, k);
 								//Compra no realizada
 								System.out.println("[1] RECARGAR ");
 								System.out.println("[2] CANCELAR");
@@ -437,20 +438,20 @@ public class SistemaCine {
 					case "3":
 						//DEVOLUCION DE ENTRADA
 						String[] pelis = desplegarEntradas(indiceRut, entradasCompradas, cantidadPeliculas, nombresDePeliculas);
-						int indicePelicula = 0; 
+						String peli;
 						while (true) {
 							System.out.println("INGRESE PELICULA: ");
-							String peli = scan.nextLine();
-							indicePelicula = buscarIndice(peli, pelis);
-							if (indicePelicula != -1) {
+							peli = scan.nextLine();
+							if (buscarIndice(peli, pelis) != -1) {
 								break;
 							}
 							else {
 								System.out.println("\nNOMBRE INVALIDO\n");
 							}
 						}
+						int indicePelicula = buscarIndice(peli, nombresDePeliculas);
 						// CALCULAR TOTAL
-						int cantEntradas = entradasCompradas[indiceRut][indicePelicula].split("/")[0].split(",").length;
+						int cantEntradas = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",").length;
 						String horario = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",")[1]; 
 						double reembolso = 0;
 						if (tiposDePeliculas[indicePelicula].equals("estreno")) {
@@ -498,12 +499,12 @@ public class SistemaCine {
 			}
 		}
 	}
-	
-	private static void agregarOcupacionAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
+
+	private static void resetearAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
 		for (int v = 0; v < asientosSeleccionados.length; v++) {
 			int i = obtenerIAsiento(asientosSeleccionados[v]);
 			int j = Integer.parseInt(asientosSeleccionados[v].split("", 2)[1]) - 1;
-			asientos[i][j][k] = "ocupado";
+			asientos[i][j][k] = "disponible";
 		}
 	}
 
