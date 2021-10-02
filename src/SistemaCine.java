@@ -145,7 +145,7 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
+	 * The main method for accesing all the functions in the program.
 	 * @param scan
 	 * @param nombres
 	 * @param apellidos
@@ -170,93 +170,121 @@ public class SistemaCine {
 			String[] tiposDePeliculas, double[] recaudaciones, double[] recaudacionesManana, double[] recaudacionesTarde,
 			String[] horarios, String[][] entradasCompradas, String[][][] asientos, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
 		while (true) {
-			printlnRepeat("*", 30);
-			System.out.println("INICIAR SESION");
-			printlnRepeat("*", 30);
-			System.out.print("\nIngrese RUT: ");
+			String headline = "INICIAR SESION";
+			System.out.println();
+			printlnRepeat("*", headline.length());
+			System.out.println(headline);
+			printlnRepeat("*", headline.length());
+			System.out.print("\n[RUT]: ");
 			String rutInput = cambiarFormato(scan.nextLine());
 			int indiceRut = buscarIndice(rutInput, ruts);	// Checks if the user is registered
 			
 			while (indiceRut == -1 && !rutInput.equals("ADMIN")) {
+				headline = "ERROR: USUARIO NO REGISTRADO";
 				System.out.println();
-				printlnRepeat("*", 30);
-				System.out.println("ERROR: USUARIO NO REGISTRADO");
-				printlnRepeat("*", 30);
-				System.out.println("\n[1] INICIAR SESION NUEVAMENTE");
-				System.out.println("[2] REGISTRAR NUEVO USUARIO");
-				System.out.println("[3] CERRAR SISTEMA");
-				System.out.print("\nOPCION: ");
+				printlnRepeat("*", headline.length());
+				System.out.println(headline);
+				printlnRepeat("*", headline.length());
+				System.out.println("\n[1] Iniciar sesion nuevamente");
+				System.out.println("[2] Registrar nuevo usuario");
+				System.out.println("[3] Cerrar sistema");
+				System.out.print("\n--> ");
 				String op = scan.nextLine();
 				if (op.equals("1")) {
 					// Try again
-					printlnRepeat("*", 30);
-					System.out.println("INTENTA INICIAR SESION NUEVAMENTE");
-					printlnRepeat("*", 30);
-					System.out.print("\nRUT: ");
+					headline = "INICIAR SESION";
+					System.out.println();
+					printlnRepeat("*", headline.length());
+					System.out.println(headline);
+					printlnRepeat("*", headline.length());
+					System.out.print("\n[RUT]: ");
 					
 					rutInput = cambiarFormato(scan.nextLine());
 					indiceRut = buscarIndice(rutInput, ruts);
 				}
 				else if (op.equals("2")) {
 					// Register new user
-					printlnRepeat("*", 30);
-					System.out.println("REGISTRAR NUEVO USUARIO (RUT: " + rutInput + ")");
-					printlnRepeat("*", 30);
-					System.out.print("\nNOMBRE: ");
+					headline = "REGISTRAR NUEVO USUARIO (RUT: " + rutInput + ")";
+					System.out.println();
+					printlnRepeat("*", headline.length());
+					System.out.println(headline);
+					printlnRepeat("*", headline.length());
+					System.out.print("\n[Nombre]: ");
 					String nombreInput = scan.nextLine();
-					System.out.print("\nAPELLIDO: ");
+					System.out.print("\n[Apellido]: ");
 					String apellidoInput = scan.nextLine();
-					System.out.print("\nCONTRASEÑA: ");
+					System.out.print("\n[Contraseña]: ");
 					String claveInput = scan.nextLine();
+					String estadoInput;
+					while (true) {
+						System.out.print("\n[Estado] ([1] Habilitado, [2] No Habilitado): ");
+						estadoInput = scan.nextLine();
+						if (estadoInput.equals("1")) {
+							estadoInput = "HABILITADO";
+							break;
+						}
+						else if (estadoInput.equals("2")) {
+							estadoInput = "NO HABILITADO";
+							break;
+						}
+						else {
+							System.out.println("\nOpcion invalida. Intente nuevamente\n");
+						}
+					}
 					
 					registrarNuevoUsuario(rutInput, ruts, nombreInput, nombres, apellidoInput, apellidos, 
-							claveInput, contrasenias, cantidadUsuarios);
+							claveInput, contrasenias, estadoInput, estados, cantidadUsuarios);
 					cantidadUsuarios++;
 					break;
 				} 
 				else if (op.equals("3")) {
 					// Close system
 					cerrarSistema(nombres,apellidos,ruts,contrasenias,saldos, nombresDePeliculas,
-							tiposDePeliculas,recaudaciones,horarios, cantidadUsuarios, cantidadPeliculas);
+							tiposDePeliculas,recaudaciones,horarios, cantidadUsuarios, cantidadPeliculas, estados);
 				} 
 				else {
 					// Invalid option
-					System.out.println("OPCION INVALIDA");
+					System.out.println("\n*** OPCION INVALIDA ***");
 				}
 			}
 			
-			//VERIFICACION DE LA CONTRASEÑA
-			System.out.print("\nContraseña: ");
+			// Password check
+			
+			System.out.print("\n[Contraseña]: ");
 			String claveInput = scan.nextLine();
 			boolean ingresoDeClave = verificacionDeClave(rutInput, ruts, claveInput, contrasenias);
 			
-			//CONTRASEÑA INCORRECTA
+			// Incorrect password
 			while (!ingresoDeClave) {
-				printlnRepeat("*", 30);
-				System.out.println("ERROR: CLAVE INCORRECTA");
-				printlnRepeat("*", 30);
-				System.out.println("\n[1] INGRESAR CLAVE NUEVAMENTE");
-				System.out.println("[2] CERRAR SISTEMA");
-				System.out.print("\nOPCION: ");
+				headline = "ERROR: CLAVE INCORRECTA";
+				System.out.println();
+				printlnRepeat("*", headline.length());
+				System.out.println(headline);
+				printlnRepeat("*", headline.length());
+				System.out.println("\n[1] Ingresar clave nuevamente");
+				System.out.println("[2] Cerar sistema");
+				System.out.print("\n--> ");
 				String op = scan.nextLine();
 				 
 				if (op.equals("1")) {
-					//REINTENTAR
-					printlnRepeat("*", 30);
-					System.out.println("INTENTA CONTRASEÑA NUEVAMENTE");
-					printlnRepeat("*", 30);
-					System.out.print("\nCONTRASEÑA: ");
+					// Retry
+					headline = "INTENTA CONTRASEÑA NUEVAMENTE";
+					System.out.println();
+					printlnRepeat("*", headline.length());
+					System.out.println(headline);
+					printlnRepeat("*", headline.length());
+					System.out.print("\n[Contraseña]: ");
 					claveInput = scan.nextLine();
 					ingresoDeClave = verificacionDeClave(rutInput, ruts,claveInput, contrasenias);
 				}
 				else if (op.equals("2")) {
-					//CERRAR SISTEMA
+					// Close system
 					cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, 
-							tiposDePeliculas, recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas);				
+							tiposDePeliculas, recaudaciones, horarios, cantidadUsuarios, cantidadPeliculas, estados);				
 				}
 				else {
-					// OPCION INVALIDA
-					System.out.println("OPCION INVALIDA");
+					// Invalid option
+					System.out.println("\n*** OPCION INVALIDA ***");
 				}
 			}
 			
@@ -279,17 +307,17 @@ public class SistemaCine {
 					String op = scan.nextLine();
 					switch (op) {
 					case "1":
-						//TAQUILLA
+						// Box office
 						taquilla(nombresDePeliculas, recaudaciones, recaudacionesManana, 
 								recaudacionesTarde, cantidadPeliculas);
 						break;
 					case "2": 
-						//INFORMACION DE CLIENTE
+						// User info
 						informacionCliente(scan, nombres, apellidos, saldos, entradasCompradas,
 								nombresDePeliculas, horarios, cantidadUsuarios, cantidadPeliculas,ruts);
 						break;
 					case "3":
-						//INICIAR OTRA SESION
+						// Login another session
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, 
 								saldos, estados, nombresDePeliculas, tiposDePeliculas, 
 								recaudaciones, recaudacionesManana, recaudacionesTarde, 
@@ -297,12 +325,12 @@ public class SistemaCine {
 								cantidadPeliculas);
 						break;
 					case "4":
-						//CERRAR SISTEMA
+						// Close system
 						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas,
-								tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
+								tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas, estados);
 						break;
 					default:
-						//OPCION INVALIDA
+						// Invalid option
 						System.out.println("\nOPCION INVALIDA\n");
 						printlnRepeat("*", 30);
 						System.out.println("MENU ADMIN");
@@ -319,18 +347,24 @@ public class SistemaCine {
 					break;
 				}
 			}
-			//MENU CLIENTE
+			// User menu
 			else {
 				desplegarMenuCliente();
-				System.out.println("\nOPCION: ");
+				System.out.print("\n--> ");
 				String op = scan.nextLine();
 				while (true) {
 					switch (op) {
 					case "1": 
-						//COMPRAR ENTRADA
+						headline = "COMPRAR ENTRADA";
+						System.out.println();
+						printlnRepeat("*", headline.length());
+						System.out.println(headline);
+						printlnRepeat("*", headline.length());
+						// Buy ticket
 						int indicePeli = 0;
 						while (true) {
-							System.out.print("Ingrese el nombre de la pelicula: ");
+							System.out.println();
+							System.out.print("[Nombre de la pelicula]: ");
 							String nombrePeli = scan.nextLine();
 							indicePeli = buscarIndice(nombrePeli, nombresDePeliculas);
 							if (indicePeli == -1) {
@@ -343,7 +377,7 @@ public class SistemaCine {
 						String[] horariosPeli = desplegarHorarios(indicePeli, horarios);
 						String funcion;
 						while (true) {
-							System.out.print("Ingrese la funcion: ");
+							System.out.print("[Funcion]: ");
 							funcion = scan.nextLine();
 							if (buscarIndice(funcion, horariosPeli) == -1) {
 								System.out.println("Funcion invalida. Intente nuevamente");
@@ -354,12 +388,13 @@ public class SistemaCine {
 						}
 						int k = obtenerKMatriz(funcion);	// We obtain the k value of the cubic matrix according to the selected function
 						desplegarAsientos(asientos, funcion);
-						System.out.print("Ingrese el numero de entradas: ");
+						System.out.print("\n[Numero de entradas]: ");
 						int cantAsientos = Integer.parseInt(scan.nextLine());
+						System.out.println();
 						String[] asientosSeleccionados = new String[cantAsientos];
 						for(int v = 0; v < cantAsientos; v++) {
 							while (true) {
-								System.out.print("Seleccione un asiento para comprar: ");
+								System.out.print("[Asiento " + (v + 1) + "]: ");
 								String asiento = scan.nextLine();
 								int i = obtenerIAsiento(asiento);
 								int j = Integer.parseInt(asiento.split("", 2)[1]) - 1;
@@ -371,22 +406,22 @@ public class SistemaCine {
 										break;
 									}
 									else {
-										System.out.println("No cumple distanciamiento social. Elija otro asiento");
+										System.out.println("\nNo cumple distanciamiento social. Elija otro asiento\n");
 									}
 								}
 								else {
-									System.out.println("Asiento ocupado. Elija otro asiento");
+									System.out.println("\nAsiento ocupado. Elija otro asiento\n");
 								}
 							}
 						}
 						double total=calcularTotalCompra(cantAsientos, rutInput, ruts, estados, indicePeli, tiposDePeliculas);
-						//CONFIRMACION 
-						
-						
-							System.out.println("DESEA CONFIRMAR LA COMPRA? SI[1] NO[0]: ");
+						// Confirmation
+							System.out.println("\nDesea confirmar la compra?\n[1] Si\n[0] No");
+							System.out.print("--> ");
 							String opcion = scan.nextLine();
+							indiceRut = buscarIndice(rutInput, ruts);
 							if (opcion.equals("1")) {
-								//Compra realizada
+								// Succesuful purchase
 								if (saldos[indiceRut] >= total) {
 									saldos[indiceRut] -= total;
 									agregarEntradasUsuario(entradasCompradas, indiceRut, indicePeli, funcion, asientosSeleccionados);
@@ -399,7 +434,7 @@ public class SistemaCine {
 									if (k % 2 == 0) {
 										recaudacionesTarde[indicePeli]+=total;
 									}
-									System.out.println("COMPRA EXITOSA ");
+									System.out.println("\nCompra exitosa!");
 									break;
 								}
 								else {
@@ -408,21 +443,23 @@ public class SistemaCine {
 								}
 								
 							}else if(opcion.equals("0")) {
+								System.out.println("\nCompra cancelada\n");
 								resetearAsientos(asientos, asientosSeleccionados, k);
-								//Compra no realizada
-								System.out.println("[1] RECARGAR ");
-								System.out.println("[2] CANCELAR");
-								System.out.println("Ingrese una opcion: ");
+								// Purchase not made
+								System.out.println("[1] Recargar saldo");
+								System.out.println("[2] Cancelar");
+								System.out.print("--> ");
 								String op2 = scan.nextLine();
 								switch (op2) {
 								case "1":
-									//RECARGAR SALDO 
-									System.out.print("CANTIDAD: $");
+									// Recharge balance
+									System.out.println("\n*** RECARGA DE SALDO ***");
+									System.out.print("[Cantidad]: $");
 									double monto = Double.parseDouble(scan.nextLine());
 									saldos[indiceRut] += monto;
 									break;
 								case "2":
-									//CANCELAR
+									// Cancel
 									System.out.println("CANCELADO . . .");
 									break;
 								}	
@@ -432,13 +469,13 @@ public class SistemaCine {
 							}
 							break;	
 					case "2":
-						//INFORMACION DE USUARIO
+						// User info
 						infomacionUsuario(rutInput,ruts,nombres,apellidos,
 								saldos,nombresDePeliculas,entradasCompradas,
 								cantidadUsuarios,cantidadPeliculas);
 						break;					
 					case "3":
-						//DEVOLUCION DE ENTRADA
+						// Return of ticket
 						String[] pelis = desplegarEntradas(indiceRut, entradasCompradas, cantidadPeliculas, nombresDePeliculas);
 						if (estaVacia(pelis)) {
 							System.out.println("No tiene entradas compradas\n");
@@ -512,21 +549,22 @@ public class SistemaCine {
 						System.out.println("Reembolso exitoso!");
 						break;
 					case "4":
-						//CARTELERA
+						// Billboard
 						cartelera(nombresDePeliculas,horarios,cantidadPeliculas);
 						break;
 					case "5":
-						//INICIAR OTRA SESION
+						// Login another session
 						iniciarSesion(scan, nombres, apellidos, ruts, contrasenias, saldos,
 								estados, nombresDePeliculas, tiposDePeliculas, recaudaciones, recaudacionesManana, 
 								recaudacionesTarde, horarios, entradasCompradas, asientos, cantidadUsuarios, cantidadPeliculas);
 						break;
 					case "6":
-						//CERRAR SISTEMA
-						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, cantidadPeliculas);
+						// Close system
+						cerrarSistema(nombres, apellidos, ruts, contrasenias, saldos, nombresDePeliculas, tiposDePeliculas, recaudacionesTarde, horarios, cantidadUsuarios, 
+								cantidadPeliculas, estados);
 						break;
 					default:
-						//OPCION INVALIDA
+						// Invalid option
 						System.out.println("\nOPCION INVALIDA");
 						desplegarMenuCliente();
 						System.out.println("\nOPCION: ");
@@ -549,10 +587,10 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param asientos
-	 * @param asientosSeleccionados
-	 * @param k
+	 * Resets the selected seats back to "disponible".
+	 * @param asientos The cubic matrix with all the seats.
+	 * @param asientosSeleccionados The selected seats.
+	 * @param k The index of the function.
 	 */
 	private static void resetearAsientos(String[][][] asientos, String[] asientosSeleccionados, int k) {
 		for (int v = 0; v < asientosSeleccionados.length; v++) {
@@ -562,6 +600,14 @@ public class SistemaCine {
 		}
 	}
 	
+	/**
+	 * Deletes the selected tickets from the user inventory.
+	 * @param entradasCompradas The user inventory.
+	 * @param indiceRut The index of the user.
+	 * @param indicePelicula The index of the movie.
+	 * @param funcion The selected function.
+	 * @param entradasDevueltas The selected tickets.
+	 */
 	private static void eliminarEntradasUsuario(String[][] entradasCompradas, int indiceRut, int indicePelicula,
 			String funcion, String[] entradasDevueltas) {
 		String[] entradasOriginales = entradasCompradas[indiceRut][indicePelicula].split("/")[1].split(",");
@@ -583,13 +629,12 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param infoEntradas 
-	 * @param entradasCompradas
-	 * @param indiceRut
-	 * @param indicePeli
-	 * @param funcion
-	 * @param asientosSeleccionados
+	 * Adds the selected tickets to the user inventory.
+	 * @param entradasCompradas The user inventory.
+	 * @param indiceRut The index of the user.
+	 * @param indicePeli The index of the movie.
+	 * @param funcion The selected function.
+	 * @param asientosSeleccionados The selected seats.
 	 */
 	private static void agregarEntradasUsuario(String[][] entradasCompradas, int indiceRut, int indicePeli, String funcion, 
 			String[] asientosSeleccionados) {
@@ -607,9 +652,9 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param asiento
-	 * @return
+	 * Returns an integer according to the provided letter.
+	 * @param asiento The seat.
+	 * @return The integer.
 	 */
 	private static int obtenerIAsiento(String asiento) {
 		String letra = asiento.split("")[0].toUpperCase();
@@ -648,7 +693,7 @@ public class SistemaCine {
 	}
 	
 	/**
-	 * 
+	 * Prints a user information.
 	 * @param scan
 	 * @param nombres
 	 * @param apellidos
@@ -658,7 +703,7 @@ public class SistemaCine {
 	 * @param horarios
 	 * @param cantidadUsuarios
 	 * @param cantidadPeliculas
-	 * @param ruts 
+	 * @param ruts
 	 */
 	private static void informacionCliente(Scanner scan, String[] nombres, String[] apellidos, double[] saldos,
 			String[][] entradasCompradas, String[] nombresDePeliculas, String[] horarios, int cantidadUsuarios, 
@@ -678,11 +723,12 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param indiceRut
-	 * @param entradasCompradas
-	 * @param cantidadPeliculas
+	 * Shows all the bought tickets from a user.
+	 * @param indiceRut The index of the user.
+	 * @param entradasCompradas The user inventory.
+	 * @param cantidadPeliculas 
 	 * @param nombresDePeliculas
+	 * @return An array with the names of the movies a user has a ticket to.
 	 */
 	private static String[] desplegarEntradas(int indiceRut, String[][] entradasCompradas, int cantidadPeliculas, 
 			String[] nombresDePeliculas) {
@@ -708,12 +754,12 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param nombresDePeliculas
-	 * @param recaudaciones
-	 * @param recaudacionesManana
-	 * @param recaudacionesTarde
-	 * @param cantidadPeliculas
+	 * Shows the money a movie has collected.
+	 * @param nombresDePeliculas The names of the movies.
+	 * @param recaudaciones The total money movies have collected.
+	 * @param recaudacionesManana The money movies have collected in the morning.
+	 * @param recaudacionesTarde The money movies have collected in the afternoon.
+	 * @param cantidadPeliculas The amount of movies the system has.
 	 */
 	private static void taquilla(String[] nombresDePeliculas, double[] recaudaciones, double[] recaudacionesManana,
 			double[] recaudacionesTarde, int cantidadPeliculas) {
@@ -726,8 +772,9 @@ public class SistemaCine {
 			
 		}
 	}
+	
 	/**
-	 * 
+	 * Shows all the movies in the system, with their functions.
 	 * @param nombresDePeliculas
 	 * @param horarios
 	 * @param cantidadPeliculas
@@ -756,7 +803,7 @@ public class SistemaCine {
 	}
 	
 	/**
-	 * 
+	 * Shows a user information.
 	 * @param rutInput
 	 * @param ruts
 	 * @param nombres
@@ -809,9 +856,9 @@ public class SistemaCine {
 	}
 	
 	/**
-	 * 
-	 * @param funcion
-	 * @return
+	 * Gets an integer representing the depth of the cubic matrix according to a function.
+	 * @param funcion The function.
+	 * @return The integer.
 	 */
 	private static int obtenerKMatriz(String funcion) {
 		int k = 0;
@@ -843,9 +890,9 @@ public class SistemaCine {
 	}
 	
 	/**
-	 * 
-	 * @param i
-	 * @return
+	 * Transforms the given number into a letter.
+	 * @param i The number.
+	 * @return The letter.
 	 */
 	private static String obtenerLetra(int i) {
 		String letra = "A";
@@ -883,11 +930,12 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
-	 * @param asientos
-	 * @param funcion
+	 * Shows all the seats in a given function.
+	 * @param asientos The cubic matrix with all the seats.
+	 * @param funcion The function.
 	 */
 	private static void desplegarAsientos(String[][][] asientos, String funcion) {
+		System.out.println("\n*** ASIENTOS ***\n");
 		int k = obtenerKMatriz(funcion);
 		for (int i = 0; i < 10; i++) {
 			String letra = obtenerLetra(i);
@@ -912,12 +960,13 @@ public class SistemaCine {
 	 * @return A String array with the avalaible schedules for the specified movie.
 	 */
 	private static String [] desplegarHorarios(int indicePeli, String[] horarios) {
+		System.out.println("\nHorarios disponibles:");
 		String[] partes = horarios[indicePeli].split(",");
 		String[] funciones = new String[partes.length / 2];
 		int j = 0;
 		for (int i = 0; i < partes.length; i += 2) {
 			String horario = partes[i] + partes[i + 1];
-			System.out.println(horario);
+			System.out.println("* " + horario);
 			funciones[j] = horario;
 			j++;
 		}
@@ -925,28 +974,29 @@ public class SistemaCine {
 	}
 
 	/**
-	 * 
+	 * Prints the menu for a user.
 	 */
 	private static void desplegarMenuCliente() {
+		String headline = "MENU CLIENTE";
 		System.out.println();
-		printlnRepeat("*", 30);
-		System.out.println("MENU CLIENTE");
-		printlnRepeat("*", 30);
-		System.out.println("\n[1] COMPRAR ENTRADA");
-		System.out.println("[2] INFORMACION DE USUARIO");
-		System.out.println("[3] DEVOLUCION DE ENTRADA");
-		System.out.println("[4] CARTELERA");
-		System.out.println("[5] INICIAR OTRA SESION");
-		System.out.println("[6] CERRAR SISTEMA");	
+		printlnRepeat("*", headline.length());
+		System.out.println(headline);
+		printlnRepeat("*", headline.length());
+		System.out.println("\n[1] Comprar entrada");
+		System.out.println("[2] Informacion de usuario");
+		System.out.println("[3] Devolucion de entrada");
+		System.out.println("[4] Cartelera");
+		System.out.println("[5] Iniciar otra sesion");
+		System.out.println("[6] Cerrar sistema");	
 	}
 
 	/**
-	 * 
-	 * @param rutInput
-	 * @param ruts
-	 * @param clave
-	 * @param contrasenias
-	 * @return
+	 * Checks if the password is correct or not.
+	 * @param rutInput The given RUT of a user.
+	 * @param ruts The RUT of the users.
+	 * @param clave The password
+	 * @param contrasenias The passwords of the users.
+	 * @return True if the password is correct. False if otherwise.
 	 */
 	private static boolean verificacionDeClave(String rutInput, String[] ruts, String clave, String[] contrasenias) {
 		if (rutInput.equals("ADMIN")) {
@@ -976,11 +1026,12 @@ public class SistemaCine {
 	 * @param horarios The avalaible times for the films.
 	 * @param cantidadUsuarios The amount of registered users in the system.
 	 * @param cantidadPeliculas The amount of films in the system.
+	 * @param estados 
 	 * @throws IOException
 	 */
 	private static void cerrarSistema(String[] nombres, String[] apellidos, String[] ruts,
 			String[] contrasenias, double[] saldos, String[] nombresDePeliculas, String[] tiposDePeliculas, 
-			double[] recaudaciones, String[] horarios, int cantidadUsuarios, int cantidadPeliculas) throws IOException {
+			double[] recaudaciones, String[] horarios, int cantidadUsuarios, int cantidadPeliculas, String[] estados) throws IOException {
 		// "clientes.txt" text file writing
 		String contenidoClientes = "";
 		for (int i = 0; i < cantidadUsuarios; i++) {
@@ -1007,10 +1058,24 @@ public class SistemaCine {
 		FileWriter writerPeliculas = new FileWriter("peliculas.txt");
 		writerPeliculas.write(contenidoPeliculas);
 		writerPeliculas.close();
+		
+		// "status.txt" text file writing
+		String contenidoStatus = "";
+		for (int i = 0; i < cantidadUsuarios; i++) {
+			String rut = ruts[i];
+			String status = estados[i];
+			contenidoStatus += rut + "," + status;
+		}
+		FileWriter writerStatus = new FileWriter("status.txt");
+		writerStatus.write(contenidoStatus);
+		writerStatus.close();
+		
+		// Close system
+		System.exit(0);
 	}
 
 	/**
-	 * 
+	 * Registers a new user in the system.
 	 * @param rutInput
 	 * @param ruts
 	 * @param nombreInput
@@ -1019,15 +1084,18 @@ public class SistemaCine {
 	 * @param apellidos
 	 * @param claveInput
 	 * @param contrasenias
+	 * @param estadoInput
+	 * @param estados
 	 * @param cantUsuarios
 	 */
 	private static void registrarNuevoUsuario(String rutInput, String[] ruts, String nombreInput, 
 			String[] nombres, String apellidoInput, String[] apellidos, String claveInput, 
-			String[] contrasenias, int cantUsuarios) {
+			String[] contrasenias, String estadoInput, String[] estados, int cantUsuarios) {
 		ruts[cantUsuarios] = rutInput;
 		nombres[cantUsuarios] = nombreInput;
 		apellidos[cantUsuarios] = apellidoInput;
 		contrasenias[cantUsuarios] = claveInput;
+		estados[cantUsuarios] = estadoInput;
 		System.out.println("\nRegistro exitoso!");
 	}
 
